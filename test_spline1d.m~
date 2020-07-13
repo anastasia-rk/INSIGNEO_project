@@ -13,8 +13,8 @@ pp = bspline(x);
 %find xval bigger than a and smaller than b
 index = find((xval > a) & (xval < b))
 %creates zero matrix the size of xval
-bx = zeros(size(xval));
-%inserts value between a and b leaving the rest at zero
-bx(index) = fnval(pp,xval(index));
+bx = zeros(size(xval))
+%inserts value between a and b leaving the res
+bx(index) = fnval(pp,xval(index))
 end 
 % out put is bx value for xval
