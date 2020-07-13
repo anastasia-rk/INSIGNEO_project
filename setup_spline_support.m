@@ -1,4 +1,4 @@
-function[knots] = setup_spline_support(grid_limits,nx,ny)
+function[knots] = setup_spline_support(grid_limits,nx,ny,order)
 % function creates a grid of cardinally spaced nodes for B-spline support
 % Input:
 % grid_limits (vector 4x1) - the size of the area of interest 
@@ -8,8 +8,8 @@ function[knots] = setup_spline_support(grid_limits,nx,ny)
 % Output:
 % knots (2 x 2*nx*ny) - ordered pairs of coordinates for each 2d spline 
 %% Number of intervals between nodes in each direction - specifically for cubic b-splines
-knot_nx = nx + 3;
-knot_ny = ny + 3;
+knot_nx = nx + order;
+knot_ny = ny + order;
 % length between nodes in each direction
 dx = (grid_limits(3)- grid_limits(1))/(knot_nx);
 dy = (grid_limits(4)- grid_limits(2))/(knot_ny);

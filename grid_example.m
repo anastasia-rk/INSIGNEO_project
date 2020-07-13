@@ -9,14 +9,14 @@ basis_type = questdlg('Type of basis function', ...
 % Set up limits of the grid: x_min,y_min,x_max,y_max
 grid_limits = [0, 0, 1000, 1000];
 % Set up number of basis functions along each axis
-nx = 4; ny = 4;
+nx = 4; ny = 4; order = 3;
 switch basis_type
     case 'gaussian'                                                         % Symmetric Gaussian function
         [knots,sigma] = setup_gaussian_support(grid_limits,nx,ny);
         % equal sigmas for isotopic basis functions
         Z = [sigma^2 0; 0 sigma^2];                                         % width of the function 
     case 'bspline'
-        [knots] = setup_spline_support(grid_limits,nx,ny);
+        [knots] = setup_spline_support(grid_limits,nx,ny,order);
         Z = 0;
         % Determine the length of support of a spline
         side1 = knots(1,2) - knots(1,1);                                    % along x axis
