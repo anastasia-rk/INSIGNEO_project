@@ -2,6 +2,10 @@
 function zz = tensorproductbspline(order,ax,bx,ay,by,xval,yval)
 % Calling previous function to form bsplines from start a to end b, with
 % specified order and value xval
+dx = (grid_limits(3) - grid_limits(1))/100;%xval
+dy = (grid_limits(4) - grid_limits(2))/100;%yval
+xval = [grid_limits(1):dx:grid_limits(3)];
+coordinate_y = [grid_limits(2):dy:grid_limits(4)];
 %pp and tt plot the point of interest 
 pp = bsplinexval(order,ax,bx,xval);
 tt = bsplinexval(order,ay,by,yval);
