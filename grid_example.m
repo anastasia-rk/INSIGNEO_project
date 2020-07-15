@@ -26,8 +26,8 @@ end
 ll = nx*ny;                                                                 % total number of bfs
 Theta_model = 10*[1:ll];                                                    % corresponding scaling coeffs
 %% Plot the basis funcion grid in 3d
-%fig('Grid','On'); 
-%colormap(my_map);
+fig('Grid','On'); 
+colormap(my_map);
 for j=1:length(Theta_model)
    switch basis_type
         case 'gaussian'
@@ -43,9 +43,9 @@ for j=1:length(Theta_model)
     Theta_temp(j) = Theta_model(j);                                         % only choose one scaling coeff to non-zero
     plot_surface(Theta_temp,Z,knots,grid_limits,basis_type);
     hold on;
-    %txt = (['$\theta_{' num2str(j) '} =$' num2str(Theta_temp(j))]);
-    %hh = Theta_temp(j);
-    %text(xx,yy,hh+5,txt,'Color','k','FontSize',18)
+    txt = (['$\theta_{' num2str(j) '} =$' num2str(Theta_temp(j))]);
+    hh = Theta_temp(j);
+    text(xx,yy,hh+5,txt,'Color','k','FontSize',18)
 end
 % view(3)
 az = -30;
