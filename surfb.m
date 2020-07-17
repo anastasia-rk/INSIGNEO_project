@@ -4,9 +4,9 @@ function surfb(order,ax,bx,ay,by,xval,yval,theta)
 %call tensor product bspline function to get zz- the tenosr prodcut of x
 %and y 
 zz = tensorproductbspline(order,ax,bx,ay,by,xx,yy);
-Z_plot = zz*theta;
+ZZ = zz*theta;
 % plot the surface 
-surf(xx,yy,Z_plot)
+surf(xx,yy,ZZ)
 %Labels
 xlabel('x');
 ylabel('y');

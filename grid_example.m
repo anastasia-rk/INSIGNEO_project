@@ -1,4 +1,6 @@
 local_init;
+
+
 %% Setup parameters
 basis_type = questdlg('Type of basis function', ...
     'Basis type',...

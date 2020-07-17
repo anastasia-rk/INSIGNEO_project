@@ -31,22 +31,33 @@ switch basis_type
             end
         end
     case 'bspline'
-         ll = size(knots,2) - 1;
-         for i = 1:N
-            for j = 1:M
-                index1 = 1;
-                for index = 1:2:ll 
-                   support_x = knots(1,index:index+1);
-                   support_y = knots(2,index:index+1);
-                   coef_x = (support_x(2)-support_x(1))/4;
-                   coef_y = (support_y(2)-support_y(1))/4;
-                   bf = biorthogonal_spline(coordinate_x(i)/coef_x,coordinate_y(j)/coef_y,support_x/coef_x,support_y/coef_y);
-                   z(j,i,index1) = Theta(index1)*bf;  
-                   index1 = index1 + 1;
-                end
-                Z_plot(j,i) = sum(z(j,i,:)) + 1;
-            end
-        end
+         ll = size(knots,2) - 1; %31
+         for index = 1:2:ll %odd numbers
+                   support_x = knots(1,index:index+1); %  the x start and ends 
+                   support_y = knots(2,index:index+1); %  the y start and ends 
+                   Z = tensorproductbspline(3,support_x(1,1),support_x(1,2),support_y(1,1),support_y(1,2),X_grid,Y_grid);
+                   Z_plot = Z_plot*index;
+                  %surf(X_grid,Y_grid,zz)
+                  %hold on
+         end
+    
+         
+        
+     %end
+         %for i = 1:N % length of xval (coordinate_x)
+           % for j = 1:M % length of yval (coordinate_y)
+               % index1 = 1;
+               % for index = 1:2:ll %odd numbers
+                 %  support_x = knots(1,index:index+1); %  the x start and ends 
+                 %  support_y = knots(2,index:index+1); %  the y start and ends 
+             
+                 %  bf = biorthogonal_spline(coordinate_x(i)/coef_x,coordinate_y(j)/coef_y,support_x/coef_x,support_y/coef_y)
+                  % z(j,i,index1) = Theta(index1)*bf 
+                 
+                 %  index1 = index1 + 1;
+               % end
+               % Z_plot(j,i) = sum(z(j,i,:)) + 1
+        
 end
 Z_min = min(Z_plot);
 Z_min_min = min(Z_min);
