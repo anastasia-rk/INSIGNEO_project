@@ -32,18 +32,21 @@ switch basis_type
         end
     case 'bspline'
          ll = size(knots,2) - 1; %31
-         for t = Theta(1,1:end)
+%          for t = Theta(1,1:end)
+         indexTheta = 1; % index of theta corresponding to each spline
          for index = 1:2:ll %odd numbers
- 
                    support_x = knots(1,index:index+1); %  the x start and ends 
                    support_y = knots(2,index:index+1); %  the y start and ends 
-                   Z = tensorproductbspline(3,support_x(1,1),support_x(1,2),support_y(1,1),support_y(1,2),X_grid,Y_grid);
-                  Z_plot = Z*t;
-                  surf(X_grid,Y_grid,Z_plot)
-                  hold on
+                   Z = tensorproductbspline(4,support_x(1,1),support_x(1,2),support_y(1,1),support_y(1,2),X_grid,Y_grid);
+                   Z_plot = Theta(indexTheta)*Z;   
+                   Spline(:,:,indexTheta) = Z_plot;
+                   indexTheta = indexTheta + 1;
+%                    Z_plot = Z*t;
+%                   surf(X_grid,Y_grid,Z_plot)
+%                   hold on
+%          end
          end
-         end
-    
+       Z_sum = sum(Spline,3);
          
         
      %end
@@ -62,13 +65,13 @@ switch basis_type
                % Z_plot(j,i) = sum(z(j,i,:)) + 1
         
 end
-Z_min = min(Z_plot);
-Z_min_min = min(Z_min);
-if Z_min_min < 0 
-    Z_plot = Z_plot + abs(Z_min_min)*ones(M,N);
-end
+% Z_min = min(Z_sum);
+% Z_min_min = min(Z_min);
+% if Z_min_min < 0 
+%     Z_plot = Z_plot + abs(Z_min_min)*ones(M,N);
+% end
 % contourf(X_grid,Y_grid,Z_plot,30,'LineWidth',0.5); hold on;
-p = surf(X_grid,Y_grid,Z_plot); hold on;
+p = surf(X_grid,Y_grid,Z_sum); hold on;
 shading interp
 alpha(p,0.4);
 a_min = min(min(Z_plot));

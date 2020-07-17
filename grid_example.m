@@ -1,6 +1,4 @@
 local_init;
-
-
 %% Setup parameters
 basis_type = questdlg('Type of basis function', ...
     'Basis type',...
@@ -11,7 +9,7 @@ basis_type = questdlg('Type of basis function', ...
 % Set up limits of the grid: x_min,y_min,x_max,y_max
 grid_limits = [0, 0, 1000, 1000];
 % Set up number of basis functions along each axis
-nx = 4; ny = 4; order = 3;
+nx = 4; ny = 4; order = 4;
 switch basis_type
     case 'gaussian'                                                         % Symmetric Gaussian function
         [knots,sigma] = setup_gaussian_support(grid_limits,nx,ny);
@@ -26,7 +24,7 @@ switch basis_type
 end
 % Arbitrary the scaling coefficients: vector of size (1xL), L = nx*ny
 ll = nx*ny;                                                                 % total number of bfs
-Theta_model = 10*[1:ll];                                                    % corresponding scaling coeffs
+Theta_model = 10*[1:ll];           % ones(ll,1); %                          % corresponding scaling coeffs
 %% Plot the basis funcion grid in 3d
 fig('Grid','On'); 
 colormap(my_map);
@@ -47,7 +45,7 @@ for j=1:length(Theta_model)
     hold on;
     txt = (['$\theta_{' num2str(j) '} =$' num2str(Theta_temp(j))]);
     hh = Theta_temp(j);
-    text(xx,yy,hh+5,txt,'Color','k','FontSize',18)
+    text(xx,yy,hh,txt,'Color','k','FontSize',18)
 end
 % view(3)
 az = -30;
@@ -62,7 +60,7 @@ zlabel('Grid of basis functions')
 fig('Surface','On'); 
 colormap(my_map);
 plot_surface(Theta_model,Z,knots,grid_limits,basis_type);
-alpha(1) % overqrite opacity from the function
+% alpha(1) % overqrite opacity from the function
 colorbar;
  %% PLot the gradient
 fig('Gradient','On'); 
