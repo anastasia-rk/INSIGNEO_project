@@ -32,7 +32,6 @@ switch basis_type
         end
     case 'bspline'
          ll = size(knots,2) - 1; %31
-%          for t = Theta(1,1:end)
          indexTheta = 1; % index of theta corresponding to each spline
          for index = 1:2:ll %odd numbers
                    support_x = knots(1,index:index+1); %  the x start and ends 
@@ -40,29 +39,9 @@ switch basis_type
                    Z = tensorproductbspline(4,support_x(1,1),support_x(1,2),support_y(1,1),support_y(1,2),X_grid,Y_grid);
                    Z_plot = Theta(indexTheta)*Z;   
                    Spline(:,:,indexTheta) = Z_plot;
-                   indexTheta = indexTheta + 1;
-%                    Z_plot = Z*t;
-%                   surf(X_grid,Y_grid,Z_plot)
-%                   hold on
-%          end
+                   indexTheta = indexTheta + 1;                 
          end
        Z_sum = sum(Spline,3);
-         
-        
-     %end
-         %for i = 1:N % length of xval (coordinate_x)
-           % for j = 1:M % length of yval (coordinate_y)
-               % index1 = 1;
-               % for index = 1:2:ll %odd numbers
-                 %  support_x = knots(1,index:index+1); %  the x start and ends 
-                 %  support_y = knots(2,index:index+1); %  the y start and ends 
-             
-                 %  bf = biorthogonal_spline(coordinate_x(i)/coef_x,coordinate_y(j)/coef_y,support_x/coef_x,support_y/coef_y)
-                  % z(j,i,index1) = Theta(index1)*bf 
-                 
-                 %  index1 = index1 + 1;
-               % end
-               % Z_plot(j,i) = sum(z(j,i,:)) + 1
         
 end
 % Z_min = min(Z_sum);
