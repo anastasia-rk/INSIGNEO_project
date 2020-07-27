@@ -42,7 +42,7 @@ switch basis_type
                    coef_x = (support_x(2)-support_x(1))/4; % scaling coefficient for x axis
                    coef_y = (support_y(2)-support_y(1))/4; % scaling coefficient for y axis
                    bf = biorthogonal_spline(coordinate_x(i)/coef_x,coordinate_y(j)/coef_y,support_x/coef_x,support_y/coef_y);
-                   z(j,i,index1) = Theta(index1)*bf 
+                   z(j,i,index1) = Theta(index1)*bf; 
                    index1 = index1 + 1;
                 end
                 Z_plot(j,i) = sum(z(j,i,:));

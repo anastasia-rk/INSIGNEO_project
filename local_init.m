@@ -1,4 +1,4 @@
-clear; clc; close all;
+clear; clc; % close all;
 %% Add mylibs to and subdirectories to path in local directory
 % Requires that library is located in the PRESENT folder.
 LibFolder = 'Functions';                                                    % name of library
