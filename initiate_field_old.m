@@ -19,8 +19,12 @@ b = 0;
 for i=1:N
     for j=1:M
         Z((i-1)*M + j,1) = a*coordinate_x(i) + b*coordinate_y(j) + c;
+        Z_plot(j,i) =  Z((i-1)*M + j,1);
     end
 end
+
+figure; 
+surf(X_grid,Y_grid,Z_plot);
 
 % generate matrix A
 ll = size(knots,2) - 1;
@@ -30,11 +34,11 @@ for i=1:N
         for index = 1:2:ll 
             support_x = knots(1,index:index+1);
             support_y = knots(2,index:index+1);
-            %coef_x = (support_x(2)-support_x(1))/4;
-            %coef_y = (support_y(2)-support_y(1))/4;
-            Z = tensorproductbspline(4,support_x(1,1),support_x(1,2),support_y(1,1),support_y(1,2),X_grid,Y_grid);
+            coef_x = (support_x(2)-support_x(1))/4;
+            coef_y = (support_y(2)-support_y(1))/4;
+%             Z = tensorproductbspline(4,support_x(1,1),support_x(1,2),support_y(1,1),support_y(1,2),X_grid,Y_grid);
             k = k + 1;
-            A((i-1)*M + j,k) = biorthogonal_spline(coordinate_x(i)/coef_x,coordinate_y(j)/coef_y,support_x/coef_x,support_y/coef_y)
+            A((i-1)*M + j,k) = biorthogonal_spline(coordinate_x(i)/coef_x,coordinate_y(j)/coef_y,support_x/coef_x,support_y/coef_y);
         end
     end
 end

@@ -24,14 +24,11 @@ switch basis_type
 end
 % Arbitrary the scaling coefficients: vector of size (1xL), L = nx*ny
 ll = nx*ny;                                                                 % total number of bfs
-% Theta_model = 1*ones(ll,1); % *[1:ll];           % ones(ll,1); %                          % corresponding scaling coeffs
-%% Initiate a field as a flat surface
-[Theta] = initiate_field(0,100,grid_limits,knots);
-Theta_model = Theta;
+Theta_model = 10*ones(ll,1); % *[1:ll];           % ones(ll,1); %                          % corresponding scaling coeffs
 %% Plot the basis funcion grid in 3d
 fig('Grid','On'); 
 colormap(my_map);
-for j=1:length(Theta_model)
+for j=1 %:length(Theta_model)
    switch basis_type
         case 'gaussian'
             xx = knots(1,j);
@@ -44,7 +41,7 @@ for j=1:length(Theta_model)
    end
     Theta_temp = zeros(length(Theta_model),1);                              % zero scaling coeffs for all bfs
     Theta_temp(j) = Theta_model(j);                                         % only choose one scaling coeff to non-zero
-    plot_surface(Theta_temp,Z,knots,grid_limits,basis_type);
+    plot_surface_old(Theta_temp,Z,knots,grid_limits,basis_type);
     hold on;
     txt = (['$\theta_{' num2str(j) '} =$' num2str(Theta_temp(j))]);
     hh = Theta_temp(j);

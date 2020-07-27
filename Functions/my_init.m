@@ -1,4 +1,3 @@
-clc; close all;
 %% Figure environment setup
 set(groot, 'defaultFigureWindowStyle','docked');
 set(groot, 'defaultFigurecolor',[1 1 1]);
