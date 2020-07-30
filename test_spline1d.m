@@ -3,6 +3,7 @@ x = [0:0.2:7];
 y = bsplinexval(4,0,4,x);
 figure; plot(x,y);
 
+
 %knots from start point a to end point b o is order of the spline 
 %and xval is the x coordinate to evluate at
 function bx = bsplinexval (order,a,b,xval)
