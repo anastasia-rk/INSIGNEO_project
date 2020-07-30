@@ -38,6 +38,7 @@ for i=1:N
             %coef_y = (support_y(2)-support_y(1))/4;
             k = k + 1;
             A((i-1)*M + j,k) = tensorproductbspline(4,support_x(1,1),support_x(1,2),support_y(1,1),support_y(1,2),coordinate_x(i),coordinate_y(j));           
+             = Z; 
         end
     end
 end
