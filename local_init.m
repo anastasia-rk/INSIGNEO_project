@@ -1,4 +1,4 @@
-clear; clc; % close all;
+clear; clc; close all;
 %% Add mylibs to and subdirectories to path in local directory
 % Requires that library is located in the PRESENT folder.
 LibFolder = 'Functions';                                                    % name of library
@@ -22,12 +22,14 @@ for iDir=git:N
        end
     end
 end
-%% Results folder
-FigFolder   = 'Results/Figures/';
-TikzFolder  = 'Results/Tikzes/';
-TabFolder   = 'Results/Tables/';
 %% Figure and interpreter setup
-my_init;
+set(0,'DefaultFigureWindowStyle','docked');
+set(0,'defaultfigurecolor',[1 1 1]);
+set(0,'defaulttextinterpreter','latex');  
+set(0, 'defaultAxesTickLabelInterpreter','latex');  
+set(0, 'defaultLegendInterpreter','latex');
+set(0, 'defaultColorbarTickLabelInterpreter','latex');
+set(0, 'DefaultAxesFontWeight', 'normal','DefaultAxesFontSize', 14);
 saveFormat = '-dpng'; % '-depsc' %
 visFlag = 'On'; %% or 'Off'
 disFlag = true; % set to false to prevent from displaying updates in work space
