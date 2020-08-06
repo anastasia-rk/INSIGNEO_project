@@ -9,7 +9,7 @@ basis_type = questdlg('Type of basis function', ...
 % Set up limits of the grid: x_min,y_min,x_max,y_max
 grid_limits = [0, 0, 1000, 1000];
 % Set up number of basis functions along each axis
-nx = 4; ny = 4; order = 4;
+nx =  6;ny = 6; order = 4;
 switch basis_type
     case 'gaussian'                                                         % Symmetric Gaussian function
         [knots,sigma] = setup_gaussian_support(grid_limits,nx,ny);
@@ -23,10 +23,14 @@ switch basis_type
         side2 = knots(2,2) - knots(2,1);                                    % along y axis
 end
 % Arbitrary the scaling coefficients: vector of size (1xL), L = nx*ny
-ll = nx*ny;                                                                 % total number of bfs
-% Theta_model = 1*ones(ll,1); % *[1:ll];           % ones(ll,1); %                          % corresponding scaling coeffs
+ll = nx*ny;        
+% Theta_model0 = 1*ones(ll,1); % *[1:ll];           % ones(ll,1); %                          % corresponding scaling coeffs
+% total number of bfs
 %% Initiate a field as a flat surface
-[Theta] = initiate_field(0,100,grid_limits,knots);
+grid_limits2 = [100, 200, 720, 750];
+[Theta] = initiate_field(0,100,grid_limits2,knots);
+hold on;
+plot_surface(Theta,Z,knots,grid_limits,basis_type);
 Theta_model = Theta;
 %% Plot the basis funcion grid in 3d
 fig('Grid','On'); 

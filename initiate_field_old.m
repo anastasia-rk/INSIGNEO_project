@@ -1,6 +1,6 @@
 function[Theta] = initiate_field(body,wound,limits,knots)
-dx = (limits(3) - limits(1))/10;
-dy = (limits(4) - limits(2))/8;
+dx = (limits(3) - limits(1))/20;
+dy = (limits(4) - limits(2))/20;
 coordinate_x = [limits(1):dx:limits(3)];
 coordinate_y = [limits(2):dy:limits(4)];
 N = length(coordinate_x);
