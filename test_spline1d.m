@@ -8,7 +8,7 @@ y_max = max(y);
 figure; plot(x,y./y_max); hold on;
 plot(x,y2);
 
-
+plot(x,y)
 %knots from start point a to end point b o is order of the spline 
 %and xval is the x coordinate to evluate at
 function bx = bsplinexval (order,a,b,xval)
