@@ -1,0 +1,12 @@
+function partial_derivative(order,ax,bx,ay,by,xval,yval)
+%provides y values for bspline of that yval 
+c = bsplinexval(order,ay,by,yval)
+%derivative of x bspline 
+d = bsplinederivative(order,ax,bx,1)
+%multiply yval with 
+output_x = d(1,:)*yval
+putput_y = d(2,:)*c
+plot(yval,c)
+end
+
+
