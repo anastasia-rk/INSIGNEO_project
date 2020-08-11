@@ -96,7 +96,7 @@ pool =  parpool('local');
 for iModel = models
 clear X Y Mode_model
 load([folderName,'simulated_tracks_' num2str(iModel)]);
-Tracks = [1:20]; 
+Tracks = [1:nTracks]; 
 for k=Tracks % Assign track lengths outside of parfor loop for use in sliced variables
     T(k) = length(Y{k});
 end

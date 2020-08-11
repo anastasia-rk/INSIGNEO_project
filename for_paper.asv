@@ -113,7 +113,7 @@ x_len = 4; % size of the state vector
 % Transition matrix
 I =   eye(2,2);
 O = zeros(2,2);
-thta1 = T/10; % reversion to mean in O-U process 
+thta1 = T/4; % reversion to mean in O-U process 
 thta2 = T/4; % reversion to mean in O-U process 
 thta3 = T/4; % reversion to mean in O-U process 
 
@@ -287,6 +287,13 @@ nTracks = length(Tracks);
 [X_resample,P_resample,nResampled,ind_resample] = resample_tracks(X_out,P_for_resampling,mode_probable,1,nTracks);
 [X_rw,P_rw,nRW,ind_rw] = resample_tracks(X_out,P_for_resampling,mode_probable,1,nTracks);
 [X_dead,P_dead,nDead,ind_dead] = resample_tracks(X_out,P_for_resampling,mode_probable,1,nTracks);
+%% Save data to file
+if hour==0
+  filename = ['Results/',Injury,num2str(iFish)];
+else
+  filename = ['Results/',Injury,num2str(iFish),'hr_',num2str(hour)]; 
+end
+save(filename);
 %% Confidence region volume
 Observed_info = Expected_info - Missing_info;
 COV_ALL = pinv(Observed_info);
@@ -474,8 +481,8 @@ text(Mean_x +2, 50,['$\mu_x$=',num2str(Mean_x)],'Color','k','FontSize',20);
 xlabel('$v_x$, $\mu$m/min', 'interpreter', 'latex');
 ylabel('\textrm{$\%$}', 'interpreter', 'latex');
 cleanfigure;
-matlab2tikz([TikzFolder,'vx3_',Injury,num2str(iFish),'.tikz'], 'showInfo', false,'parseStrings',false, ...
-         'standalone', false,'height', '3cm', 'width','4cm');
+matlab2tikz([TikzFolder,'vx3_',Injury,num2str(iFish),'.tikz'], 'showInfo', false,'parseStrings',false,'standalone', ...
+            false, 'height', '3', '4','15cm','checkForUpdates',false);
 fig('Vy hist. 3',visFlag)
 [counts, binValues] = hist(Vy_3, numberOfBins);
 normalizedCounts = 100 * counts / sum(counts);
@@ -488,8 +495,8 @@ text(Mean_y +2, 50,['$\mu_y$=',num2str(Mean_y)],'Color','k','FontSize',20);
 xlabel('$v_y$, $\mu$m/min', 'interpreter', 'latex');
 ylabel('\textrm{$\%$}', 'interpreter', 'latex');
 cleanfigure;
-matlab2tikz([TikzFolder,'vy3_',Injury,num2str(iFish),'.tikz'], 'showInfo', false,'parseStrings',false, ...
-         'standalone', false,'height', '3cm', 'width','4cm');
+matlab2tikz([TikzFolder,'vy3_',Injury,num2str(iFish),'.tikz'],'showInfo', false,'parseStrings',false,'standalone', ...
+            false, 'height', '3', '4','15cm','checkForUpdates',false);
 
 %%
 fig('Positions',visFlag);

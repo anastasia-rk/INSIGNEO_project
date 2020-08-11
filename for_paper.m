@@ -113,7 +113,7 @@ x_len = 4; % size of the state vector
 % Transition matrix
 I =   eye(2,2);
 O = zeros(2,2);
-thta1 = T/10; % reversion to mean in O-U process 
+thta1 = T/5; % reversion to mean in O-U process 
 thta2 = T/4; % reversion to mean in O-U process 
 thta3 = T/4; % reversion to mean in O-U process 
 
@@ -139,7 +139,7 @@ G_rw = [T^2/2*I; T*I];
 clear T
 %% Disturbance matrices
 % Q - describes power of state noise
-sig1_Q = 2; % RW  disturbance - cell speed
+sig1_Q = 1; % RW  disturbance - cell speed
 sig2_Q = 2; % CV disturbance - random component of cell acceleration
 sig3_Q = 0.5;
 % For DIFF
@@ -353,8 +353,8 @@ legend(thisline,names);
 % {'$\hat{\phi}_{1,1}$','$\hat{\phi}_{1,2}$','$\hat{\phi}_{2,1}$','$\hat{\phi}_{2,2}$'}
 print([FigFolder,'phi_convergence_',Injury,num2str(iFish)],saveFormat)
 cleanfigure;
-matlab2tikz([TikzFolder,'phi_convergence_',Injury,num2str(iFish),'.tikz'], 'showInfo', false,'parseStrings',false, ...
-         'standalone', false,'height', '3cm', 'width','4cm');
+matlab2tikz([TikzFolder,'phi_convergence_',Injury,num2str(iFish),'.tikz'], 'showInfo', false,'parseStrings',false,'standalone', ...
+            false, 'height', '4', '4','15cm','checkForUpdates',false);
 %% Extract velocities from resampled tracks
 Vx_count = 1;
 Vy_count = 1;
@@ -413,8 +413,8 @@ xlabel('$v_x$, $\mu$m/min', 'interpreter', 'latex');
 ylabel('\textrm{$\%$}', 'interpreter', 'latex');
 % 
 cleanfigure;
-matlab2tikz([TikzFolder,'vx_',Injury,num2str(iFish),'.tikz'], 'showInfo', false,'parseStrings',false, ...
-         'standalone', false,'height', '3cm', 'width','4cm');
+matlab2tikz([TikzFolder,'vx_',Injury,num2str(iFish),'.tikz'], 'showInfo', false,'parseStrings',false,'standalone', ...
+            false, 'height', '3', '4','15cm','checkForUpdates',false);
 fig('Vy hist. 1',visFlag)
 [counts, binValues] = hist(Vy_1, numberOfBins);
 normalizedCounts = 100 * counts / sum(counts);
@@ -427,8 +427,8 @@ text(Mean_y +2, 50,['$\mu_y$=',num2str(Mean_y)],'Color','k','FontSize',20);
 xlabel('$v_y$, $\mu$m/min', 'interpreter', 'latex');
 ylabel('\textrm{$\%$}', 'interpreter', 'latex');
 cleanfigure;
-matlab2tikz([TikzFolder,'vy1_',Injury,num2str(iFish),'.tikz'], 'showInfo', false,'parseStrings',false, ...
-         'standalone', false,'height', '3cm', 'width','4cm');
+matlab2tikz([TikzFolder,'vy1_',Injury,num2str(iFish),'.tikz'], 'showInfo', false,'parseStrings',false,'standalone', ...
+            false, 'height', '3', '4','15cm','checkForUpdates',false);
 Med_x = median(Vx_2);
 Mean_x = mean(Vx_2);
 Med_y = median(Vy_2);
@@ -447,8 +447,8 @@ text(Mean_x +2, 50,['$\mu_x$=',num2str(Mean_x)],'Color','k','FontSize',20);
 xlabel('$v_x$, $\mu$m/min', 'interpreter', 'latex');
 ylabel('\textrm{$\%$}', 'interpreter', 'latex');
 cleanfigure;
-matlab2tikz([TikzFolder,'vx2_',Injury,num2str(iFish),'.tikz'], 'showInfo', false,'parseStrings',false, ...
-         'standalone', false,'height', '3cm', 'width','4cm');
+matlab2tikz([TikzFolder,'vx2_',Injury,num2str(iFish),'.tikz'], 'showInfo', false,'parseStrings',false,'standalone', ...
+            false, 'height', '3', '4','15cm','checkForUpdates',false);
 fig('Vy hist. 2',visFlag)
 [counts, binValues] = hist(Vy_2, numberOfBins);
 normalizedCounts = 100 * counts / sum(counts);
@@ -461,8 +461,8 @@ text(Mean_y +2, 50,['$\mu_y$=',num2str(Mean_y)],'Color','k','FontSize',20);
 xlabel('$v_y$, $\mu$m/min', 'interpreter', 'latex');
 ylabel('\textrm{$\%$}', 'interpreter', 'latex');
 cleanfigure;
-matlab2tikz([TikzFolder,'vy2_',Injury,num2str(iFish),'.tikz'], 'showInfo', false,'parseStrings',false, ...
-         'standalone', false,'height', '3cm', 'width','4cm');
+matlab2tikz([TikzFolder,'vy2_',Injury,num2str(iFish),'.tikz'],'showInfo', false,'parseStrings',false,'standalone', ...
+            false, 'height', '3', '4','15cm','checkForUpdates',false);
       
 Med_x = median(Vx_3);
 Mean_x = mean(Vx_3);
@@ -481,8 +481,8 @@ text(Mean_x +2, 50,['$\mu_x$=',num2str(Mean_x)],'Color','k','FontSize',20);
 xlabel('$v_x$, $\mu$m/min', 'interpreter', 'latex');
 ylabel('\textrm{$\%$}', 'interpreter', 'latex');
 cleanfigure;
-matlab2tikz([TikzFolder,'vx3_',Injury,num2str(iFish),'.tikz'], 'showInfo', false,'parseStrings',false, ...
-         'standalone', false,'height', '3cm', 'width','4cm');
+matlab2tikz([TikzFolder,'vx3_',Injury,num2str(iFish),'.tikz'], 'showInfo', false,'parseStrings',false,'standalone', ...
+            false, 'height', '3', '4','15cm','checkForUpdates',false);
 fig('Vy hist. 3',visFlag)
 [counts, binValues] = hist(Vy_3, numberOfBins);
 normalizedCounts = 100 * counts / sum(counts);
@@ -495,8 +495,8 @@ text(Mean_y +2, 50,['$\mu_y$=',num2str(Mean_y)],'Color','k','FontSize',20);
 xlabel('$v_y$, $\mu$m/min', 'interpreter', 'latex');
 ylabel('\textrm{$\%$}', 'interpreter', 'latex');
 cleanfigure;
-matlab2tikz([TikzFolder,'vy3_',Injury,num2str(iFish),'.tikz'], 'showInfo', false,'parseStrings',false, ...
-         'standalone', false,'height', '3cm', 'width','4cm');
+matlab2tikz([TikzFolder,'vy3_',Injury,num2str(iFish),'.tikz'],'showInfo', false,'parseStrings',false,'standalone', ...
+            false, 'height', '3', '4','15cm','checkForUpdates',false);
 
 %%
 fig('Positions',visFlag);
