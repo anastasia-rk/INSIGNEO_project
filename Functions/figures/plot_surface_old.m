@@ -1,5 +1,5 @@
-function plot_gradient(Theta,Z,knots,grid_limits,basis_type)
-% Plot the gradient of the surface that comprises the grid of basis functions with corresponding
+function plot_surface_old(Theta,Z,knots,grid_limits,basis_type,number)
+% Plot the surface that comprises the grid of b-splines with corresponding
 % coefficients
 % Input:
 % Theta(Lx1)        - scaling coefficients
@@ -8,26 +8,26 @@ function plot_gradient(Theta,Z,knots,grid_limits,basis_type)
 % grid_limints(4x1) - the region of interes [x1 y1 x2 y2]
 % basis_type        - gaussian or bspline
 % Distance incriments
-dx = (grid_limits(3) - grid_limits(1))/25;
-dy = (grid_limits(4) - grid_limits(2))/25;
-% Grid of points at which we evaluate the function
+dx = (grid_limits(3) - grid_limits(1))/100;%xval
+dy = (grid_limits(4) - grid_limits(2))/100;%yval
 coordinate_x = [grid_limits(1):dx:grid_limits(3)];
 coordinate_y = [grid_limits(2):dy:grid_limits(4)];
 N = length(coordinate_x);
 M = length(coordinate_y);
 [X_grid, Y_grid] = meshgrid(coordinate_x,coordinate_y);
+% Suface of basis function superposition
 switch basis_type
     case 'gaussian'
         ll = size(knots,2);
-        for i = 1:N % loop over values of x coordinate
-            for j = 1:M % loop over values of y coordinate
-                for index1 = 1:ll % loop over Gaussians
+        for i = 1:N
+            for j = 1:M
+                for index1 = 1:ll
                    S = [coordinate_x(i); coordinate_y(j)];
                    c = knots(:,index1);
                    pow = (S - c)'*inv(Z)*((S - c));
-                   z(j,i,index1) = Theta(index1)*exp(-pow/2); 
+                   z(j,i,index1) = Theta(index1)*exp(-pow/2);   
                 end
-                ZZ(j,i) = sum(z(j,i,:));
+                Z_plot(j,i) = sum(z(j,i,:)) + 1;
             end
         end
     case 'bspline'
@@ -42,17 +42,22 @@ switch basis_type
                    coef_x = (support_x(2)-support_x(1))/4; % scaling coefficient for x axis
                    coef_y = (support_y(2)-support_y(1))/4; % scaling coefficient for y axis
                    bf = biorthogonal_spline(coordinate_x(i)/coef_x,coordinate_y(j)/coef_y,support_x/coef_x,support_y/coef_y);
-                   z(j,i,index1) = Theta(index1)*bf;   
+                   z(j,i,index1) = Theta(index1)*bf; 
                    index1 = index1 + 1;
                 end
-                ZZ(j,i) = sum(z(j,i,:));
+                Z_plot(j,i) = sum(z(j,i,:));
             end
         end
 end
-[dx, dy] = gradient(ZZ, 10, 10);
-Z_min = min(ZZ);
+Z_min = min(Z_plot);
 Z_min_min = min(Z_min);
-contour(X_grid, Y_grid, ZZ), hold on    % plot level surfaces
-quiver(X_grid, Y_grid, dx, dy, 1, 'k'); % plot vector field
-plotted = true;
+if Z_min_min < 0 
+    Z_plot = Z_plot + abs(Z_min_min)*ones(M,N);
 end
+% contourf(X_grid,Y_grid,Z_plot,30,'LineWidth',0.5); hold on;
+p = surf(X_grid,Y_grid,Z_plot); hold on;
+shading interp
+alpha(p,number);
+a_min = min(min(Z_plot));
+a_max = max(max(Z_plot));
+caxis([a_min a_max]); % the limits of colourbar if it needs to be used. colourbar should be called outside of the function

@@ -32,27 +32,22 @@ switch basis_type
         end
     case 'bspline'
          ll = size(knots,2) - 1;
-         for i = 1:N
-            for j = 1:M
-                index1 = 1;
-                for index = 1:2:ll 
-                   support_x = knots(1,index:index+1);
-                   support_y = knots(2,index:index+1);
-                   coef_x = (support_x(2)-support_x(1))/4;
-                   coef_y = (support_y(2)-support_y(1))/4;
-                   bf = tensor_spline(coordinate_x(i)/coef_x,coordinate_y(j)/coef_y,support_x/coef_x,support_y/coef_y);
-                   z(j,i,index1) = Theta(index1)*bf;  
-                   index1 = index1 + 1;
-                end
-                Z_plot(j,i) = sum(z(j,i,:));
-            end
-        end
+         indexTheta = 1; % index of theta corresponding to each spline
+         for index = 1:2:ll %odd numbers
+                   support_x = knots(1,index:index+1); %  the x start and ends 
+                   support_y = knots(2,index:index+1); %  the y start and ends 
+                   Z = tensorproductbspline(4,support_x(1,1),support_x(1,2),support_y(1,1),support_y(1,2),X_grid,Y_grid);
+                   Z_plot = Theta(indexTheta)*Z;   
+                   Spline(:,:,indexTheta) = Z_plot;
+                   indexTheta = indexTheta + 1;                 
+         end
+         Z_sum = sum(Spline,3);
 end
-Z_min = min(Z_plot);
+Z_min = min(Z_sum);
 Z_min_min = min(Z_min);
-a_min = min(min(Z_plot));
-a_max = max(max(Z_plot));
-p = pcolor(X_grid,Y_grid,Z_plot);
+a_min = min(min(Z_sum));
+a_max = max(max(Z_sum));
+p = pcolor(X_grid,Y_grid,Z_sum);
 view(2);
 shading interp
 caxis manual

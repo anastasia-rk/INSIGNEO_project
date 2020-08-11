@@ -31,4 +31,3 @@ my_init;
 saveFormat = '-dpng'; % '-depsc' %
 visFlag = 'On'; %% or 'Off'
 disFlag = true; % set to false to prevent from displaying updates in work space
-

@@ -1,14 +1,14 @@
-function[x_posterior,P_posterior,lik] = ekf(y,x,P,Q,R,A,B,C,theta,Z,knots,basis_type)
+function[x_posterior,P_posterior,lik] = ekf(y,x,P,Q,R,A,B,C,theta,knots,order)
 % approximations of F and H
 dx = 0.001;
 for i=1:length(x)
 xx = x;
 xx(i) = x(i) + dx; 
-F(:,i) = (dynfun (xx,A,B,theta,Z,knots,basis_type) - dynfun (x,A,B,theta,Z,knots,basis_type))./dx;
+F(:,i) = (dynfun (xx,A,B,theta,knots,order) - dynfun (x,A,B,theta,knots,order))./dx;
 H(:,i) = (measfun(xx,C) - measfun(x,C))./dx;
 end
 % Suboptimal estimator
-x_prior     = dynfun(x,A,B,theta,Z,knots,basis_type);
+x_prior     = dynfun(x,A,B,theta,knots,order);
 P_prior     = F*P*F' + Q;
 d_y          = y - measfun(x,C);
 S           = H*P_prior*H' + R;

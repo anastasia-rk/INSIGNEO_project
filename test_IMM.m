@@ -1,0 +1,299 @@
+local_init;
+%% Select the pattern
+nTracks = 100;                                                              % number of tracks to generate in each map
+pattern = questdlg('Starting position distribution', ...
+    'Select pattern',...
+	'Uniform','Line','Point','');
+switch pattern
+    case 'Uniform'
+         folderName = 'Simulated/uniform_start/';
+    case 'Line'
+         folderName = 'Simulated/line_start/';
+    case 'Point'
+         folderName = 'Simulated/point_start/';
+end
+%% Setup parameters
+%basis_type = 'gaussian';
+basis_type = 'bspline';
+% Set up limits of the grid: x_min,y_min,x_max,y_max
+grid_limits = [0, 0, 1000, 1000];
+% Set up number of basis functions
+nx = 4; ny = 4; order = 4;
+[knots] = setup_spline_support(grid_limits,nx,ny,order);
+Z = 0;
+ll = size(knots,2)/2;
+%% Initialise field estimate and model parameters
+ Theta_model = ones(ll,1);
+ Theta_model(1:4,1) = 10;
+ Theta_model(5:8,1) = 100;
+ Theta_model(9:12,1) = 190;
+ Theta_model(13:16,1) = 290;
+ Theta = Theta_model;
+ 
+figure; 
+colormap(my_map);
+plot_field(Theta_model,Z,knots,grid_limits,'bspline');
+mu_field = 1;
+ %% State-space model parameters
+x_len   = 4;
+T       = 1;                                                                % sampling time
+thta_cv = 0.3;                                                              % reversion to mean in O-U process 
+thta_rw = 0.7;                                                              % reversion to mean in O-U process 
+I       = eye(2,2);
+O       = zeros(2,2);
+% mean_vel = 0; % mu of O-U process
+% For resonsive mode
+F_cv = [I   T*I;...
+        O   I- thta_cv*T*I];
+% For random walk mode (with I for second order, with O for first order)
+F_rw = [I   T*I;...
+        O   I - thta_rw*T*I]; 
+% Contrl matrix
+B_cv = [T^2/2*I; T*I];
+B_rw = [O; O];
+% Measurement matrix
+C = [I O];
+% Disturbance matrix
+G_cv = [T^2/2*I; T*I];
+G_rw = [T^2/2*I; T*I]; 
+%% Covariances for the Kalman filters
+sig1_Q = 0.5; % RW  disturbance - cell speed
+sig2_Q = 0.2; % CV disturbance - random component of cell acceleration
+% Process noise - for random walk
+mm = sig1_Q*G_rw*G_rw';  
+dd = diag(mm);
+Q_rw = diag(dd);
+% Process noise - for responsive mode
+mm = sig2_Q*G_cv*G_cv';
+dd = diag(mm);
+Q_cv = diag(dd);
+% Measurement noise covariance (mode-independent)
+R = 1*eye(2); 
+%% Set up Markov chains
+n_models = 2;
+p_tr = [0.9 0.1;...
+        0.1 0.9];...       
+F{1} = F_cv;
+F{2} = F_rw;
+B{1} = B_cv;
+B{2} = B_rw;
+Q{1} = Q_cv;
+Q{2} = Q_rw;
+G{1} = G_cv;
+G{2} = G_rw;
+mu_0 = ones(1,n_models);
+mu_0 = mu_0./n_models;
+% for the maximisation step
+%% IMM loop
+iModel  = 1;
+Tracks  = 5;
+load([folderName,'simulated_tracks_' num2str(iModel)]);
+for k=Tracks    
+T = length(Y{k});
+for t=1:T
+    y{t} = Y{k}(:,t);
+end
+%% recurtion cycle for IMM filter
+mu{1} = mu_0;
+for j=1:n_models
+    x_m{1,j} = zeros(x_len,1);
+    x_m{1,j}(1:2,:) = y{1};
+    P{1,j} = eye(x_len);
+end
+for t=2:T
+    % Mode conditioned calculations
+   for j=1:n_models
+       % Calculate mixing probabilities
+       c(j) = mu{t-1}*p_tr(:,j); % normalising constant
+       for i=1:n_models 
+           mu_mix(i,j) = p_tr(i,j)*mu{t-1}(i)/c(j); % probabilities
+       end
+       % Mixing initial conditions for filtering
+       v = zeros(x_len,1);
+       for i=1:n_models
+           v = v +  x_m{t-1,i}*mu_mix(i,j);
+       end
+       pv = zeros(x_len);
+       for i=1:n_models
+           pv = pv +  mu_mix(i,j)*(P{t-1,i} + (x_m{t-1,i} - v)*(x_m{t-1,i} - v)');
+       end
+       x_0{j} = v;
+       P_0{j} = pv;
+       % Model-matched filtering
+       % Linear
+       clear beta;
+%        beta = field_gradient(Z_temp{k}(1:2,t-1),Z,knots,basis_type);
+%        u{t-1,j} = mu_field*beta*Theta;
+%        [x_m{t,j},P{t,j},lik{t,j}] = kf(y{t},x_0{j},u{t-1,j},P_0{j},F{j},B{j},C,Q{j},R);
+       % Nonlinear
+         [x_m{t,j},P{t,j},lik{t,j}] = ekf(y{t},x_0{j},P_0{j},Q{j},R,F{j},B{j},C,Theta,knots,order);
+%         [x_pr,x_m{t,j},P_pr,P{t,j},lik{t,j}] = ukf(y{t},x_0{j},P_0{j},Q{j},R,F{j},B{j},C,Theta,Z,knots,basis_type);            
+       % Prior to probabilities update
+       m(1,j) = lik{t,j}*c(j);
+       lik_plot(j,t) = lik{t,j};
+       x_cond_plot{j}(:,t) = x_m{t,j};
+   end
+   % Mode probabilites 
+   c_all = sum(m);
+   mu{t} = m./c_all;
+   % Merging states (optional)
+   v = zeros(x_len,1);
+   for j=1:n_models
+       v = v + mu{t}(1,j)*x_m{t,j};
+   end
+   x_merged{t} = v;
+   % Merging covariances (optional)
+   pv = zeros(x_len);
+   for j=1:n_models
+       pv = pv + mu{t}(1,j)*(P{t,j}+ (x_m{t,j} - v)*(x_m{t,j} - v)');
+   end
+   P_merged{t} = pv;
+%    x_plot(:,t) = v;
+%    mu_plot(:,t) = mu{t}';
+   [max_mode,i] = max(mu{t});
+   mode_probable{k}(t) = i;
+   X_filt{k}(:,t) = x_merged{t};    % merged state
+   Mu_filt{k}(:,t)  = mu{t}'; 
+end
+   X_out{k}(:,t) = x_merged{T};    % merged state
+   P_out{k,T}(:,:) = P_merged{T};  % merged covariance
+   P_for_resampling{k}(T,:,:) = P_merged{T};  % merged covariance
+   for j =1:n_models
+        X_cond{k,j}(:,T) = x_m{T,j};     % mode-matched posterior estimate
+        P_cond{k,j,T}(:,:) = P{T,j};   % mode-matched posterior covariance
+   end
+%% Recurtion cycle for IMM RTS smoother
+% Initialise smoother
+mu_s{T} = mu{T};
+for j=1:n_models
+    x_s{T,j} = x_m{T,j};
+    P_s{T,j} = P{T,j};
+end
+   Mu_out{k}(:,T)  = mu_s{T}';     % mode probability
+
+for t=T-1:-1:1 
+% Backward transition kernel
+    for i=1:n_models
+       % Calculate mixing probabilities
+       e(i) = mu{t}*p_tr(:,i); % normalising constant
+       for j=1:n_models 
+           b_tr(i,j) = p_tr(j,i)*mu{t}(j)/e(i); % probabilities
+       end
+    end
+    % Mode conditioned calculations
+   for j=1:n_models
+       % Calculate mixing probabilities
+       d(j) = mu_s{t+1}*b_tr(:,j); % normalising constant
+       for i=1:n_models 
+           mu_mix(j,i) = b_tr(i,j)*mu_s{t+1}(i)/d(j); % probabilities
+       end
+       mu_cond{k,t} = mu_mix;
+       % Mixing initial conditions for filtering
+       v = zeros(x_len,1);
+       for i=1:n_models
+           v = v +  x_s{t+1,i}*mu_mix(j,i);
+       end
+       pv = zeros(x_len);
+       for i=1:n_models
+           pv = pv +  mu_mix(j,i)*(P_s{t+1,i} + (x_s{t+1,i} - v)*(x_s{t+1,i} - v)');
+       end
+       xs_0{j} = v;
+       Ps_0{j} = pv;
+       % Model-matched smoothing
+       % Linear
+%        beta = field_gradient(Z_temp{k}(1:2,t+1),Z,knots,basis_type);
+%        u{t,j} = mu_field*beta*Theta;
+%        [x_s{t,j},P_s{t,j},lik_s{t,j}] =       rts(xs_0{j},x_m{t,j},u{t,j},Ps_0{j},P{t,j},F{j},B{j},Q{j});
+        [x_s{t,j},P_s{t,j},~] = erts(xs_0{j},x_m{t,j},Ps_0{j},P{t,j},F{j},B{j},Q{j},Theta,knots,order); % ,lik_s{t,j}
+%          [x_s{t,j},P_s{t,j},lik_smm] = urts(xs_0{j},x_m{t,j},Ps_0{j},P{t,j},F{j},B{j},G{j},Q{j},Theta,Z,knots,basis_type);
+       
+       % Priot to probabilities update
+       x_sm_cond_plot{j}(:,t) = x_s{t,j};
+       % output to be used in the maximisation
+       X_cond{k,j}(:,t) = x_s{t,j};     % mode-matched posterior estimate
+       P_cond{k,j,t}(:,:) = P_s{t,j};   % mode-matched posterior covariance
+   end
+   % Compute smoothed likelihoods
+   for j=1:n_models
+       lik_s{t,j} = 0;
+       for i=1:n_models
+           n_s{t+1,i} = sm_lik(x_s{t+1,i},x_m{t,j},P{t,j},F{j},B{j},Q{j},Theta,knots,order);
+           lik_s{t,j} = lik_s{t,j} + n_s{t+1,i}*p_tr(i,j);
+           lik_s_plot(j,t) = lik_s{t,j};
+       end
+       m_s(1,j) = lik_s{t,j}*mu{t}(1,j);
+   end
+% Mode probabilites 
+   d_all = sum(m_s);
+   mu_s{t} = m_s./d_all;
+% Merging states
+   v = zeros(x_len,1);
+   for j=1:n_models
+       v = v + mu_s{t}(1,j)*x_s{t,j};
+   end
+   x_merged{t} = v;
+% Merging covariances
+   pv = zeros(x_len);
+   for j=1:n_models
+       pv = pv + mu_s{t}(1,j)*(P{t,j}+ (x_s{t,j} - v)*(x_s{t,j} - v)');
+   end
+   P_merged{t} = pv;
+   x_sm_plot(:,t) = v;
+   mu_plot(:,t) = mu_s{t}';
+   [max_mode,i] = max(mu_s{t});
+   mode_probable{k}(t) = i;
+   
+% Output of the IMM algorithm
+   Lik_out{k}(:,t) = lik_s_plot(:,t);
+   X_out{k}(:,t) = x_merged{t};    % merged state
+   P_out{k,t}(:,:) = P_merged{t};  % merged covariance
+   P_for_resampling{k}(t,:,:) = P_merged{t};  % merged covariance
+   Mu_out{k}(:,t)  = mu_s{t}';     % mode probability
+end % for smoother (t)
+Z_temp{k} = X_out{k};
+end % for track (k)
+
+%% 
+figure; 
+plot(x_plot(1,2:end),x_plot(2,2:end)); hold on;
+plot(x_sm_plot(1,:),x_sm_plot(2,:)); hold on;
+plot(Y{k}(1,:),Y{k}(2,:))
+plot(x_sm_plot(1,1),x_sm_plot(2,1),'o'); hold on;
+
+legend('filtered','smoothed','real')
+%% 
+figure; 
+plot(x_plot(3,:)); hold on;
+plot(x_sm_plot(3,:)); hold on;
+plot(X{k}(3,:)); hold on;
+plot(x_cond_plot{1}(3,:)); hold on;
+plot(x_cond_plot{2}(3,:)); hold on;
+legend('filtered','smoothed','real','mode 1','mode 2')
+figure;  
+plot(x_plot(4,:)); hold on;
+plot(x_sm_plot(4,:)); hold on;
+plot(X{k}(4,:)); hold on;
+plot(x_cond_plot{1}(4,:)); hold on;
+plot(x_cond_plot{2}(4,:)); hold on;
+legend('filtered','smoothed','real','mode 1','mode 2')
+
+%%
+figure;
+plot(Mode_model{k}); hold on;
+plot(mode_probable{k});
+legend('Modelled mode','Estimated mode')
+
+figure;
+plot(mu_plot(1,:)); hold on;
+plot(mu_plot(2,:));
+legend('Mode 1','Mode 2')
+
+figure;
+plot(lik_plot(1,2:end)); hold on;
+plot(lik_s_plot(1,2:end));
+legend('Filtered','Smoothed')
+
+figure;
+plot(lik_plot(2,2:end)); hold on;
+plot(lik_s_plot(2,2:end));
+legend('Filtered','Smoothed')
