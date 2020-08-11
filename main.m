@@ -15,12 +15,6 @@
 % Identification of Neutrophil Cell Dynamic Behaviour", 2016.
 local_init;
 %% Load data
-
-% for mild injury: 1-6
-% for reverse: 2,3,9
-% Injury = questdlg('Select injury type', ...
-%     'Injury type',...
-% 	'Normal','Mild','Hutt','Severe','');
 list = {'Normal','Mild','Hutt','Severe'};
 [selected,tf] = listdlg('ListString',list,'SelectionMode','single');
 Injury = list{selected};
