@@ -94,11 +94,8 @@ Sig_w{1} = G{1}*(inv(G{1}'*G{1}))'*Q_cv_inv*inv(G{1}'*G{1})*G{1}';
 Sig_w{2} = G{2}*(inv(G{2}'*G{2}))'*Q_rw_inv*inv(G{2}'*G{2})*G{2}';
 %% Monte Carlo loop
 L = 50;                                                                     % number of particles
-models = [1];                                                            % Monte-Carlo simulations
-pool = gcp('nocreate');
-if isempty(pool)
-    pool = parpool('local');
-end
+models = [1:50];                                                            % Monte-Carlo simulations
+pool =  parpool('local');
 for iModel = models
 clear X Y Mode_model
 load([folderName,'simulated_tracks_' num2str(iModel)]);
@@ -167,10 +164,8 @@ parfor k=Tracks
          weights = numers./denoms;
          % transpose the vector to use in the dynamical function readily
          x_tilde = x_tilde'; 
+         grads = gradient_compute(x_tilde,knots,order);
          % evaluate the gradient at each particle
-         for i = 1:L
-            grads{k}(:,:,i) = gradient_bspline(x_tilde(1:2,i),knots,order);
-         end
          for j=1:n_models
             % sample the particles from proposal pdf
             x_j_tilde = mvnrnd(X_cond{k}{j}(:,t+1)',P_cond{k}{j,t+1},L);
@@ -183,7 +178,7 @@ parfor k=Tracks
             % transpose the vector to use in the dynamical function readily
             x_j_tilde = x_j_tilde'; 
             for i=1:L
-                bb = B{j}*mu_field* grads{k}(:,:,i);
+                bb = B{j}*mu_field* grads{i};
                 sum1 = sum1 + weights(i)*Mu_out{k}(j,t)*bb'*Sig_w{j}*bb;
                 for l=1:L
                     sum2 = sum2 + weights(i)*weights_j(l)*Mu_out{k}(j,t)*bb'*Sig_w{j}*(x_j_tilde(:,l) - F{j}*x_tilde(:,i));
@@ -207,7 +202,7 @@ Missing_info = (sum1*Theta - sum2)*(sum1*Theta_old - sum2)';
 %% Check convergence
 fprintf('Checking convergence condition... \n')
 [converged_theta]   = converge_param(Theta,Theta_old,iter);
-[converged_phi]     = converge_param(vec(p_tr),vec(p_tr_old),iter);
+[converged_phi]     = converge_param(p_tr(:),p_tr_old(:),iter);
 % [converged_r]       = converge_param(vec(R),vec(R_old),iter);
     if converged_theta & converged_phi % & converged_r                      % if convergence condition fulfilled
         break;
@@ -223,6 +218,8 @@ Fisher_info{iModel} = Expected_info;
 Miss_fisher{iModel} = Missing_info;
 end % for MC simulation (iModel)
 delete(pool);
+fiName = ['Results/is_',pattern];
+save(finName);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Example track - filtered, smoothed, conditioned
 fig('Track',visFlag); 

@@ -287,13 +287,6 @@ nTracks = length(Tracks);
 [X_resample,P_resample,nResampled,ind_resample] = resample_tracks(X_out,P_for_resampling,mode_probable,1,nTracks);
 [X_rw,P_rw,nRW,ind_rw] = resample_tracks(X_out,P_for_resampling,mode_probable,1,nTracks);
 [X_dead,P_dead,nDead,ind_dead] = resample_tracks(X_out,P_for_resampling,mode_probable,1,nTracks);
-%% Save data to file
-if hour==0
-  filename = ['Results/',Injury,num2str(iFish)];
-else
-  filename = ['Results/',Injury,num2str(iFish),'hr_',num2str(hour)]; 
-end
-save(filename);
 %% Confidence region volume
 Observed_info = Expected_info - Missing_info;
 COV_ALL = pinv(Observed_info);
