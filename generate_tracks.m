@@ -14,8 +14,8 @@ switch pattern
          sy_init = 500*rand(nTracks,1) + 250;
          folderName = 'Simulated/line_start/';
     case 'Point'
-         sx_init = 450*ones(nTracks,1);
-         sy_init = 450*ones(nTracks,1); 
+         sx_init = 350*ones(nTracks,1);
+         sy_init = 350*ones(nTracks,1); 
          folderName = 'Simulated/point_start/';
 end
 make_folder(folderName);
@@ -24,18 +24,9 @@ basis_type = 'bspline'; % 'gaussian'; %
 % Set up limits of the grid: x_min,y_min,x_max,y_max
 grid_limits = [0, 0, 1000, 1000];
 % Set up number of basis functions
-nx = 4; ny = 4;
-switch basis_type
-    case 'gaussian'
-        [knots,sigma] = setup_gaussian_support(grid_limits,nx,ny);
-        % equal sigmas for isotopic basis functions
-        Z = [sigma^2 0; 0 sigma^2];   
-        ll = size(knots,2);
-    case 'bspline'
-        [knots] = setup_spline_support(grid_limits,nx,ny);
-        Z = 0;
-        ll = size(knots,2)/2;
-end
+nx = 4; ny = 4; order = 4;
+[knots] = setup_spline_support(grid_limits,nx,ny,order);
+ll = size(knots,2)/2;
 Theta = ones(ll,1);
 Theta(1:4,1) = 10;
 Theta(5:8,1) = 100;
@@ -88,7 +79,8 @@ G{2} = G_rw;
 %%
 fig('Heatmap',visFlag); 
 colormap(my_map);
-done1 = plot_heatmap(Theta_model,Z,knots,grid_limits,basis_type);
+Z = 0;
+plot_heatmap(Theta_model,Z,knots,grid_limits,basis_type);
 hold on;
 side = knots(1,2) - knots(1,1);
 for i=1:length(Theta_model)
@@ -136,7 +128,7 @@ for j=1:nTracks
        m = Mode{j}(i-1);
        % Simulate state
        clear beta;
-       grad_model{j}(i-1,:,:) = field_gradient(X{j}(1:2,i-1),Z,knots,basis_type);
+       grad_model{j}(i-1,:,:) = gradient_bspline(X{j}(1:2,i-1),knots,order);
        aa = F{m}*X{j}(:,i-1);
        beta(:,:) = grad_model{j}(i-1,:,:);
        bb{j}(:,i) = beta*Theta;
@@ -172,7 +164,7 @@ end
 if iModel == 1
     fig('Tracks',visFlag); 
     colormap(my_map);
-    plotter = plot_heatmap(Theta,Z,knots,grid_limits,basis_type);
+    plot_heatmap(Theta,Z,knots,grid_limits,basis_type);
     hold on;
     for j = 1:nTracks
         txt = num2str(j);
