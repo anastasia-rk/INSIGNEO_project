@@ -18,7 +18,7 @@ basis_type = 'bspline';
 % Set up limits of the grid: x_min,y_min,x_max,y_max
 grid_limits = [0, 0, 1000, 1000];
 % Set up number of basis functions
-nx = 4; ny = 4;
+nx = 4; ny = 4; order = 4;
 switch basis_type
     case 'gaussian'
         [knots,sigma] = setup_gaussian_support(grid_limits,nx,ny);
@@ -27,13 +27,13 @@ switch basis_type
         Z = [sigma^2 0; 0 sigma^2];   
         ll = size(knots,2);
     case 'bspline'
-        [knots] = setup_spline_support(grid_limits,nx,ny);
+        [knots] = setup_spline_support(grid_limits,nx,ny,order);
         Z = 0;
         ll = size(knots,2)/2;
 end
 %% Initialise field estimate and model parameters
-grid_limits1 = grid_limits;
-Theta = initiate_field(0,60,grid_limits1,knots);                            %fit splines to a flat surface
+grid_limits1 = [100, 200, 720, 750];
+Theta = initiate_field(0,100,grid_limits1,knots);                            %fit splines to a flat surface
 Theta_old = Theta;
 
  Theta_model = ones(ll,1);
@@ -45,7 +45,7 @@ Theta_old = Theta;
  
 figure; 
 colormap(my_map);
-done = plot_field(Theta_model,Z,knots,grid_limits,'bspline');
+plot_field(Theta_model,Z,knots,grid_limits,'bspline');
 mu_field = 1;
  %% State-space model parameters
 x_len   = 4;
@@ -65,7 +65,7 @@ F_rw = [I   T*I;...
 B_cv = [T^2/2*I; T*I];
 B_rw = [O; O];
 % Measurement matrix
-H = [I O];
+C = [I O];
 % Disturbance matrix
 G_cv = [T^2/2*I; T*I];
 G_rw = [T^2/2*I; T*I]; 
@@ -74,8 +74,10 @@ sig1_Q = 0.5; % RW  disturbance - cell speed
 sig2_Q = 0.2; % CV disturbance - random component of cell acceleration
 % Process noise - for random walk
 Q_rw = sig1_Q*I;  
+Q_rw_inv = (1/sig1_Q)*eye(2);
 % Process noise - for responsive mode
 Q_cv = sig2_Q*I;
+Q_cv_inv = (1/sig2_Q)*eye(2);
 % Measurement noise covariance (mode-independent)
 R = 1*eye(2); 
 %% Set up Markov chains
@@ -90,6 +92,8 @@ Q{1} = Q_cv;
 Q{2} = Q_rw;
 G{1} = G_cv;
 G{2} = G_rw;
+mu_0 = ones(1,n_models);
+mu_0 = mu_0./n_models;
 % for the maximisation step
 Sig_w{1} = G{1}*(inv(G{1}'*G{1}))'*Q_cv_inv*inv(G{1}'*G{1})*G{1}';
 Sig_w{2} = G{2}*(inv(G{2}'*G{2}))'*Q_rw_inv*inv(G{2}'*G{2})*G{2}';
@@ -106,10 +110,6 @@ converged_r     = false;
 iter_max  = 10;
 iter      = 0;
 Theta = zeros(ll,1); 
-for k=Tracks
-    Z_temp{k} = zeros(4,length(Y{k}));
-    Z_temp{k}(1:2,:) = Y{k};
-end
 %% EM loop
 while  (iter < iter_max)
 %% Expectation step
@@ -117,6 +117,8 @@ fprintf('E-step... \n')
 clear x_merged p_merged mu_s mu x_m x_s P_m P_s
 iter = iter + 1;  
 for k=Tracks    
+Z_temp{k} = zeros(4,length(Y{k}));
+Z_temp{k}(1:2,:) = Y{k};
 T = length(Y{k});
 for t=1:T
     y{t} = Y{k}(:,t);
@@ -154,7 +156,7 @@ for t=2:T
 %        u{t-1,j} = mu_field*beta*Theta;
 %        [x_m{t,j},P{t,j},lik{t,j}] = kf(y{t},x_0{j},u{t-1,j},P_0{j},F{j},B{j},C,Q{j},R);
        % Nonlinear
-         [x_m{t,j},P{t,j},lik{t,j}] = ekf(y{t},x_0{j},P_0{j},Q{j},R,F{j},B{j},C,Theta,Z,knots,basis_type);
+         [x_m{t,j},P{t,j},lik{t,j}] = ekf(y{t},x_0{j},P_0{j},Q{j},R,F{j},B{j},C,Theta,knots,order);
 %         [x_pr,x_m{t,j},P_pr,P{t,j},lik{t,j}] = ukf(y{t},x_0{j},P_0{j},Q{j},R,F{j},B{j},C,Theta,Z,knots,basis_type);            
        % Prior to probabilities update
        m(1,j) = lik{t,j}*c(j);
@@ -232,7 +234,7 @@ for t=T-1:-1:1
 %        beta = field_gradient(Z_temp{k}(1:2,t+1),Z,knots,basis_type);
 %        u{t,j} = mu_field*beta*Theta;
 %        [x_s{t,j},P_s{t,j},lik_s{t,j}] =       rts(xs_0{j},x_m{t,j},u{t,j},Ps_0{j},P{t,j},F{j},B{j},Q{j});
-        [x_s{t,j},P_s{t,j}] = erts(xs_0{j},x_m{t,j},Ps_0{j},P{t,j},F{j},B{j},Q{j},Theta,Z,knots,basis_type); % ,lik_s{t,j}
+        [x_s{t,j},P_s{t,j},~] = erts(xs_0{j},x_m{t,j},Ps_0{j},P{t,j},F{j},B{j},Q{j},Theta,knots,order); % ,lik_s{t,j}
 %          [x_s{t,j},P_s{t,j},lik_smm] = urts(xs_0{j},x_m{t,j},Ps_0{j},P{t,j},F{j},B{j},G{j},Q{j},Theta,Z,knots,basis_type);
        
        % Priot to probabilities update
@@ -245,7 +247,7 @@ for t=T-1:-1:1
    for j=1:n_models
        lik_s{t,j} = 0;
        for i=1:n_models
-           n_s{t+1,i} = sm_lik(x_s{t+1,i},x_m{t,j},P{t,j},F{j},B{j},Q{j},Theta,Z,knots,basis_type);
+           n_s{t+1,i} = sm_lik(x_s{t+1,i},x_m{t,j},P{t,j},F{j},B{j},Q{j},Theta,knots,order);
            lik_s{t,j} = lik_s{t,j} + n_s{t+1,i}*p_tr(i,j);
            lik_s_plot(j,t) = lik_s{t,j};
        end
@@ -303,7 +305,6 @@ for j=1:n_models
 end % for modes (j)
 p_tr_old = p_tr;
 p_tr = transitions{iter}
-
 %% Field parameters
 sum1 = 0; sum2 = 0; sum3 = 0;
 denom4 = 0; sum4 = zeros(2,2); sum5 = zeros(2,2);
@@ -322,6 +323,7 @@ for k=Tracks
       dx{2}(:,T) = dx{2}(:,T-1);
      for t=1:T-1
          gg(:,:) = field_gradient(Z_temp{k}(1:2,t),Z,knots,basis_type);
+         gg1(:,:) = gradient_bspline(Z_temp{k}(1:2,t),knots,order);
          for j=1:n_models
          bb = B{j}*mu_field*gg;
          sum1 = sum1 + Mu_out{k}(j,t)*bb'*Sig_w{j}*bb;
