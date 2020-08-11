@@ -1,4 +1,4 @@
-function plot_surface(Theta,Z,knots,grid_limits,basis_type,number)
+function plot_surface(Theta,Z,knots,grid_limits,basis_type,num)
 % Plot the surface that comprises the grid of b-splines with corresponding
 % coefficients
 % Input:
@@ -50,8 +50,7 @@ end
 %     Z_plot = Z_plot + abs(Z_min_min)*ones(M,N);
 % end
 % contourf(X_grid,Y_grid,Z_plot,30,'LineWidth',0.5); hold on;
-p = surf(X_grid,Y_grid,Z_sum); hold on;
-alpha(p,number)
+surf(X_grid,Y_grid,Z_sum,'FaceColor','g', 'FaceAlpha',number, 'EdgeColor','none'); hold on;
 shading interp
 a_min = min(min(Z_plot));
 a_max = max(max(Z_plot));

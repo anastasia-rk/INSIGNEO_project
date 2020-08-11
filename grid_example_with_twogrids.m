@@ -37,11 +37,11 @@ Theta_model1 = 5*ones*[1:tt]; % ones(ll,1); %                          % corresp
 grid_limits2 = [100, 200, 720, 750];
 [Theta] = initiate_field(0,100,grid_limits2,knots);
 hold on;
-plot_surface(Theta,Z,knots,grid_limits,basis_type,0.5,winter);
+plot_surface(Theta,Z,knots,grid_limits,basis_type,0.5);
 %Theta_model = Theta;
 %% Plot the basis funcion grid in 3d
 fig('Grid','On'); 
-%ax1 = subplot(2,1,1);
+ax1 = subplot(2,1,1);
 %colormap(my_map);
 for j=1:length(Theta_model)
    switch basis_type
@@ -57,13 +57,13 @@ for j=1:length(Theta_model)
    end
     Theta_temp = zeros(length(Theta_model),1);                              % zero scaling coeffs for all bfs
     Theta_temp(j) = Theta_model(j);                                         % only choose one scaling coeff to non-zero
-    plot_surface_old(Theta_temp,Z,knots,grid_limits,basis_type,0.25,spring);
+    plot_surface_old(Theta_temp,Z,knots,grid_limits,basis_type,0.25);
     %txt = (['$\theta_{' num2str(j) '} =$' num2str(Theta_temp(j))]);
     %hh = Theta_temp(j);
     %text(xx,yy,hh,txt,'Color','k','FontSize',18)
 end
-%colormap(ax1,spring)
-%ax2 =  subplot(2,1,2);
+colormap(ax1,spring)
+ax2 =  subplot(2,1,2);
 %hold on 
 for j=1:length(Theta_model1)
    switch basis_type
@@ -79,12 +79,12 @@ for j=1:length(Theta_model1)
    end
     Theta_temp1 = zeros(length(Theta_model1),1);                              % zero scaling coeffs for all bfs
     Theta_temp1(j) = Theta_model1(j);  
-    plot_surface_old(Theta_temp1,Z,knots1,grid_limits,basis_type,0.5,winter);
+    plot_surface_old(Theta_temp1,Z,knots1,grid_limits,basis_type,0.5);
     %txt = (['$\theta_{' num2str(j) '} =$' num2str(Theta_temp(j))]);
     %hh = Theta_temp(j);
     %text(xx,yy,hh,txt,'Color','k','FontSize',18)
 end
-  %colormap(ax2,winter)
+  colormap(ax2,winter)
 % view(3)
 az = -30;
 el = 40;

@@ -1,4 +1,4 @@
-function plot_surface(Theta,Z,knots,grid_limits,basis_type)
+function plot_surface_old(Theta,Z,knots,grid_limits,basis_type,number)
 % Plot the surface that comprises the grid of b-splines with corresponding
 % coefficients
 % Input:
@@ -57,7 +57,7 @@ end
 % contourf(X_grid,Y_grid,Z_plot,30,'LineWidth',0.5); hold on;
 p = surf(X_grid,Y_grid,Z_plot); hold on;
 shading interp
-alpha(p,0.4);
+alpha(p,number);
 a_min = min(min(Z_plot));
 a_max = max(max(Z_plot));
 caxis([a_min a_max]); % the limits of colourbar if it needs to be used. colourbar should be called outside of the function
