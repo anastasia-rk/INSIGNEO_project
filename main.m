@@ -57,13 +57,6 @@ load([folderName,'mask_',num2str(iFish)]); % downloads variable BW
 % The mask variable should be named BW
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Convert mask into a surface 
-AA = double(BW); % create a surface
-Xx = 1:1:size(A,2); % create the grid of x coords
-Yy = 1:1:size(A,1); % create the grid of y coords
-[Yy_grid,Xx_grid] = meshgrid(Xx,Yy); % mesh
-white=[1,1,1]; % surface colour
-gg = [0.8,0.8,0.8]; % extra colour for cells
 %% For data split into hours
 hour = 0;
 if hour~=0
@@ -119,9 +112,9 @@ x_len = 4; % size of the state vector
 % Transition matrix
 I =   eye(2,2);
 O = zeros(2,2);
-thta1 = T/20; % reversion to mean in O-U process 
-thta2 = T/10; % reversion to mean in O-U process 
-thta3 = T/10; % reversion to mean in O-U process 
+thta1 = 0.1; % T/20; % reversion to mean in O-U process 
+thta2 = 0.5; % T/10; % reversion to mean in O-U process 
+thta3 = 0.5; % T/10; % reversion to mean in O-U process 
 
 mean_vel = 0; % mu of O-U process
 % brownian motoion with friction  (velocity as O-U process)
@@ -142,10 +135,11 @@ C = [I O];
 % Disturbance matrix
 G_cv = [T^2/2*I; T*I];
 G_rw = [T^2/2*I; T*I]; 
+clear T
 %% Disturbance matrices
 % Q - describes power of state noise
-sig1_Q = 3; % RW  disturbance - cell speed
-sig2_Q = 3; % CV disturbance - random component of cell acceleration
+sig1_Q = 2; % RW  disturbance - cell speed
+sig2_Q = 2; % CV disturbance - random component of cell acceleration
 sig3_Q = 0.5;
 % For DIFF
 m = sig1_Q*G_cv*G_cv';  
@@ -329,7 +323,7 @@ figure;
 % line([0, iter_plot],[0.8, 0.8],'Color','black'); hold on;
 % line([0, iter_plot],[0.2, 0.2],'Color','black'); hold on;
 % line([0, iter_plot],[0.1, 0.1],'Color','black'); hold on;
-x_patch = [0:iter_plot];
+x_patch = [0:iter];
 iPhi = 0;
 for j=1:n_models
     for l=j:n_models
@@ -531,6 +525,14 @@ for k=Tracks
     plot(X_out{k}(1,2:end),X_out{k}(2,2:end),'r'); hold on;
 end
 title('Smoothed merged')
+
+%% Convert mask into a surface 
+AA = double(BW); % create a surface
+Xx = 1:1:size(A,2); % create the grid of x coords
+Yy = 1:1:size(A,1); % create the grid of y coords
+[Yy_grid,Xx_grid] = meshgrid(Xx,Yy); % mesh
+white=[1,1,1]; % surface colour
+gg = [0.8,0.8,0.8]; % extra colour for cells
 %%
 % fig3
 % Cell tracks colored with modes
