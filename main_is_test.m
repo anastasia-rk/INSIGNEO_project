@@ -1,9 +1,10 @@
 local_init;
 %% Select the pattern
 nTracks = 100;                                                              % number of tracks to generate in each map
-pattern = questdlg('Starting position distribution', ...
-    'Select pattern',...
-	'Uniform','Line','Point','');
+% pattern = questdlg('Starting position distribution', ...
+%     'Select pattern',...
+% 	'Uniform','Line','Point','');
+pattern = 'Uniform';
 switch pattern
     case 'Uniform'
          folderName = 'Simulated/uniform_start/';
@@ -33,11 +34,7 @@ Theta_old = Theta;
  Theta_model(5:8,1) = 100;
  Theta_model(9:12,1) = 190;
  Theta_model(13:16,1) = 290;
- 
-figure; 
-colormap(my_map);
-plot_field(Theta_model,Z,knots,grid_limits,'bspline');
-mu_field = 1;
+ mu_field = 1;
  %% State-space model parameters
 x_len   = 4;
 T       = 1;                                                                % sampling time

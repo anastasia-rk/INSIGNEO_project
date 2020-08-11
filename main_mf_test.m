@@ -1,5 +1,5 @@
 local_init;
-visFlag = 'Off'
+visFlag = 'Off';
 %% Select the pattern
 nTracks = 100;                                                              % number of tracks to generate in each map
 % pattern = questdlg('Starting position distribution', ...
