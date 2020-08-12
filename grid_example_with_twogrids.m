@@ -9,8 +9,8 @@ basis_type = questdlg('Type of basis function', ...
 % Set up limits of the grid: x_min,y_min,x_max,y_max
 grid_limits = [0, 0, 1000, 1000];
 % Set up number of basis functions along each axis
-nx =  6;ny = 6; order = 4;
-mx = 3; my = 3;
+nx =  8;ny = 8; order = 4;
+mx = 4; my = 4;
 switch basis_type
     case 'gaussian'                                                         % Symmetric Gaussian function
         [knots,sigma] = setup_gaussian_support(grid_limits,nx,ny);
@@ -31,7 +31,7 @@ end
 ll = nx*ny;   
 tt = mx*my;
 Theta_model = 1*ones*[1:ll];    
-Theta_model1 = 5*ones*[1:tt]; % ones(ll,1); %                          % corresponding scaling coeffs
+Theta_model1 = 3*ones*[1:tt]; % ones(ll,1); %                          % corresponding scaling coeffs
 % total number of bfs
 %% Initiate a field as a flat surface
 grid_limits2 = [100, 200, 720, 750];
@@ -42,6 +42,7 @@ plot_surface(Theta,Z,knots,grid_limits,basis_type,0.5);
 %% Plot the basis funcion grid in 3d
 fig('Grid','On'); 
 ax1 = subplot(2,1,1);
+title('Fine grid of 8x8 splines')
 %colormap(my_map);
 for j=1:length(Theta_model)
    switch basis_type
@@ -64,6 +65,7 @@ for j=1:length(Theta_model)
 end
 colormap(ax1,spring)
 ax2 =  subplot(2,1,2);
+title('Coarse grid of 4x4 splines')
 %hold on 
 for j=1:length(Theta_model1)
    switch basis_type
@@ -84,7 +86,7 @@ for j=1:length(Theta_model1)
     %hh = Theta_temp(j);
     %text(xx,yy,hh,txt,'Color','k','FontSize',18)
 end
-  colormap(ax2,winter)
+ colormap(ax2,winter)
 % view(3)
 az = -30;
 el = 40;
