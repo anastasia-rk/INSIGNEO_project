@@ -21,8 +21,8 @@ for i=1:N
     end
 end
 
-figure; 
-plot3(X_grid,Y_grid,Z_plot);
+% figure; 
+% plot3(X_grid,Y_grid,Z_plot);
 
 % generate matrix A
 ll = size(knots,2) - 1;

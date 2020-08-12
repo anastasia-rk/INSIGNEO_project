@@ -1,9 +1,11 @@
 local_init;
+visFlag = 'Off';
 %% Select the pattern
 nTracks = 100;                                                              % number of tracks to generate in each map
-pattern = questdlg('Starting position distribution', ...
-    'Select pattern',...
-	'Uniform','Line','Point','');
+% pattern = questdlg('Starting position distribution', ...
+%     'Select pattern',...
+% 	'Uniform','Line','Point','');
+pattern = 'Uniform';
 switch pattern
     case 'Uniform'
          folderName = 'Simulated/uniform_start/';
@@ -26,18 +28,13 @@ ll = size(knots,2)/2;
 grid_limits1 = [100, 200, 720, 750];
 Theta = initiate_field(0,100,grid_limits1,knots);                            %fit splines to a flat surface
 Theta_old = Theta;
-
  Theta_model = ones(ll,1);
  Theta = ones(ll,1);
  Theta_model(1:4,1) = 10;
  Theta_model(5:8,1) = 100;
  Theta_model(9:12,1) = 190;
  Theta_model(13:16,1) = 290;
- 
-figure; 
-colormap(my_map);
-plot_field(Theta_model,Z,knots,grid_limits,'bspline');
-mu_field = 1;
+ mu_field = 1;
  %% State-space model parameters
 x_len   = 4;
 T       = 1;                                                                % sampling time
@@ -93,7 +90,7 @@ mu_0 = mu_0./n_models;
 Sig_w{1} = G{1}*(inv(G{1}'*G{1}))'*Q_cv_inv*inv(G{1}'*G{1})*G{1}';
 Sig_w{2} = G{2}*(inv(G{2}'*G{2}))'*Q_rw_inv*inv(G{2}'*G{2})*G{2}';
 %% Monte Carlo loop
-models = [1];                                                               % Monte-Carlo simulations
+models = [1:50];                                                               % Monte-Carlo simulations
 pool = gcp('nocreate');
 if isempty(pool)
     pool = parpool('local');
@@ -115,7 +112,7 @@ p_tr = 0.5*ones(n_models);
 %% EM loop
 while  (iter < iter_max)
 %% Expectation step
-fprintf('E-step... \n')
+% fprintf('E-step... \n')
 iter = iter + 1;  
 %% Parfor loop for IMM
 tic
@@ -131,7 +128,7 @@ parfor k=Tracks
 end % for track (k)
 toc
 %% Maximization step [2]
-fprintf('M-step... \n')
+% fprintf('M-step... \n')
 %% Transition probability matrix 
 mu_joint = zeros(n_models,n_models);
 for j=1:n_models
@@ -176,9 +173,9 @@ Expected_info = sum1;
 Missing_info = (sum1*Theta - sum2)*(sum1*Theta_old - sum2)';
 % temp(:,iter) = Theta;
 %% Check convergence
-fprintf('Checking convergence condition... \n')
+% fprintf('Checking convergence condition... \n')
 [converged_theta]   = converge_param(Theta,Theta_old,iter);
-[converged_phi]     = converge_param(vec(p_tr),vec(p_tr_old),iter);
+[converged_phi]     = converge_param(p_tr(:),p_tr_old(:),iter);
 % [converged_r]       = converge_param(vec(R),vec(R_old),iter);
     if converged_theta & converged_phi % & converged_r                      % if convergence condition fulfilled
         break;
@@ -194,24 +191,9 @@ Fisher_info{iModel} = Expected_info;
 Miss_fisher{iModel} = Missing_info;
 end % for MC simulation (iModel)
 delete(pool);
+fiName = ['Results/mf_',pattern];
+save(finName);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Example track - filtered, smoothed, conditioned
-fig('Track',visFlag); 
-subplot(3,1,1);
-plot(x_plot(1,2:end),x_plot(2,2:end)); hold on;
-plot(x_sm_plot(1,:),x_sm_plot(2,:)); hold on;
-plot(X_cond{100,1}(1,:),X_cond{100,1}(2,:)); hold on;
-plot(X_cond{100,2}(1,:),X_cond{100,2}(2,:)); hold on;
-subplot(3,1,2);
-plot(x_plot(3,:)); hold on;
-plot(x_sm_plot(3,:)); hold on;
-plot(X_cond{100,1}(3,:)); hold on;
-plot(X_cond{100,2}(3,:)); hold on;
-subplot(3,1,3); 
-plot(x_plot(4,:)); hold on;
-plot(x_sm_plot(4,:)); hold on;
-plot(X_cond{100,1}(4,:)); hold on;
-plot(X_cond{100,2}(4,:)); hold on;
 %% Transition probability matrix for all models - statistics
 iter_plot = iter+1;
 for j=1:n_models
@@ -225,11 +207,10 @@ for j=1:n_models
     end
 end
 fig('Convergence of Phi',visFlag); 
-figure; 
-% line([0, iter_plot],[0.9, 0.9],'Color','black'); hold on;
-% line([0, iter_plot],[0.8, 0.8],'Color','black'); hold on;
-% line([0, iter_plot],[0.2, 0.2],'Color','black'); hold on;
-% line([0, iter_plot],[0.1, 0.1],'Color','black'); hold on;
+line([0, iter_plot],[0.9, 0.9],'Color','black'); hold on;
+line([0, iter_plot],[0.8, 0.8],'Color','black'); hold on;
+line([0, iter_plot],[0.2, 0.2],'Color','black'); hold on;
+line([0, iter_plot],[0.1, 0.1],'Color','black'); hold on;
 x_patch = [0:iter_plot];
 xxx = [x_patch fliplr(x_patch)];
 iPhi = 0;
