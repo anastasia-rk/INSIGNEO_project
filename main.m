@@ -88,9 +88,9 @@ y_lim = [padH y_max-padH];
 %basis_type = 'gaussian';
 basis_type = 'bspline';
 % Set up limits of the grid: x_min,y_min,x_max,y_max
-grid_limits = [0, 0, x_max - padW/2, y_max];
+grid_limits = [0, 0, x_max, y_max];
 % Set up number of basis functions
-nx = 5; ny = 4; order = 4;
+nx = 6; ny = 6; order = 4;
 [knots] = setup_spline_support(grid_limits,nx,ny,order); % spline support nodes
 Z = 0;
 ll = size(knots,2)/2; % size of parameter vector
@@ -124,9 +124,9 @@ x_len = 4; % size of the state vector
 % Transition matrix
 I =   eye(2,2);
 O = zeros(2,2);
-thta1 = T/10; % reversion to mean in O-U process 
-thta2 = T/4; % reversion to mean in O-U process 
-thta3 = T/4; % reversion to mean in O-U process 
+thta1 = 0.3; % reversion to mean in O-U process 
+thta2 = 0.3; % reversion to mean in O-U process 
+thta3 = 0.5; % reversion to mean in O-U process 
 
 mean_vel = 0; % mu of O-U process
 % brownian motoion with friction  (velocity as O-U process)
@@ -183,7 +183,7 @@ Candidate = [1:1:n_models];
 % 3 - stationary (random walk)
 F{1} = F_cv;
 F{2} = F_rw;
-F{3} = F_rw;
+F{3} = F_st;
 B{1} = B_cv;
 B{2} = B_rw;
 B{3} = B_rw;
@@ -213,7 +213,7 @@ for k=Tracks % Assign track lengths outside of parfor loop for use in sliced var
 end
 % Create parallel pool
 converged  = false;
-iter_max   = 10;
+iter_max   = 20;
 iter       = 0;
 pool_check = gcp('nocreate');
 if isempty(pool_check)
@@ -282,7 +282,11 @@ Missing_info = (sum1*Theta - sum2)*(sum1*Theta_old - sum2)';
 %% Check convergence
 fprintf('Checking convergence condition... \n')
 [converged_theta]   = converge_param(Theta,Theta_old,iter);
+<<<<<<< HEAD
 [converged_phi]     = converge_param(reshape(p_tr,1,[]),reshape(p_tr_old,1,[]),iter);
+=======
+[converged_phi]     = converge_param(p_tr(:),p_tr_old(:),iter);
+>>>>>>> sharc
 % [converged_r]       = converge_param(vec(R),vec(R_old),iter);
     if converged_theta & converged_phi % & converged_r                      % if convergence condition fulfilled
         break;
@@ -298,6 +302,13 @@ nTracks = length(Tracks);
 [X_resample,P_resample,nResampled,ind_resample] = resample_tracks(X_out,P_for_resampling,mode_probable,1,nTracks);
 [X_rw,P_rw,nRW,ind_rw] = resample_tracks(X_out,P_for_resampling,mode_probable,1,nTracks);
 [X_dead,P_dead,nDead,ind_dead] = resample_tracks(X_out,P_for_resampling,mode_probable,1,nTracks);
+%% Save data to file
+if hour==0
+  filename = ['Results/',Injury,num2str(iFish)];
+else
+  filename = ['Results/',Injury,num2str(iFish),'hr_',num2str(hour)]; 
+end
+save(filename);
 %% Confidence region volume
 Observed_info = Expected_info - Missing_info;
 COV_ALL = pinv(Observed_info);
@@ -330,7 +341,6 @@ for j=1:n_models
     end
 end
 fig('Convergence of Phi',visFlag); 
-figure; 
 % line([0, iter_plot],[0.9, 0.9],'Color','black'); hold on;
 % line([0, iter_plot],[0.8, 0.8],'Color','black'); hold on;
 % line([0, iter_plot],[0.2, 0.2],'Color','black'); hold on;
@@ -357,7 +367,8 @@ ylabel('$\hat{\phi}_{j,i}$')
 legend(thisline,names);
 % {'$\hat{\phi}_{1,1}$','$\hat{\phi}_{1,2}$','$\hat{\phi}_{2,1}$','$\hat{\phi}_{2,2}$'}
 print([FigFolder,'phi_convergence_',Injury,num2str(iFish)],saveFormat)
-
+matlab2tikz([TikzFolder,'phi_convergence_',Injury,num2str(iFish),'.tikz'], 'showInfo', false,'parseStrings',false, ...
+         'standalone', false,'height', '3cm', 'width','4cm');
 %% Extract velocities from resampled tracks
 Vx_count = 1;
 Vy_count = 1;
@@ -415,9 +426,8 @@ text(Mean_x +2, 50,['$\mu_x$=',num2str(Mean_x)],'Color','k','FontSize',20);
 xlabel('$v_x$, $\mu$m/min', 'interpreter', 'latex');
 ylabel('\textrm{$\%$}', 'interpreter', 'latex');
 % 
-%  cleanfigure;
-%  matlab2tikz('histogram_vx1.tikz', 'showInfo', false,'parseStrings',false, ...
-%          'standalone', false,'height', '3cm', 'width','4cm');
+matlab2tikz([TikzFolder,'vx_',Injury,num2str(iFish),'.tikz'], 'showInfo', false,'parseStrings',false, ...
+         'standalone', false,'height', '3cm', 'width','4cm');
 fig('Vy hist. 1',visFlag)
 [counts, binValues] = hist(Vy_1, numberOfBins);
 normalizedCounts = 100 * counts / sum(counts);
@@ -429,10 +439,8 @@ line([Mean_y, Mean_y], yylim, 'LineWidth', 1, 'Color', 'r');
 text(Mean_y +2, 50,['$\mu_y$=',num2str(Mean_y)],'Color','k','FontSize',20);
 xlabel('$v_y$, $\mu$m/min', 'interpreter', 'latex');
 ylabel('\textrm{$\%$}', 'interpreter', 'latex');
-
-%  cleanfigure;
-%  matlab2tikz('histogram_vy1.tikz', 'showInfo', false,'parseStrings',false, ...
-%          'standalone', false,'height', '3cm', 'width','3cm');
+matlab2tikz([TikzFolder,'vy1_',Injury,num2str(iFish),'.tikz'], 'showInfo', false,'parseStrings',false, ...
+         'standalone', false,'height', '3cm', 'width','4cm');
 Med_x = median(Vx_2);
 Mean_x = mean(Vx_2);
 Med_y = median(Vy_2);
@@ -450,11 +458,8 @@ line([Mean_x, Mean_x], yylim, 'LineWidth', 1, 'Color', 'r');
 text(Mean_x +2, 50,['$\mu_x$=',num2str(Mean_x)],'Color','k','FontSize',20);
 xlabel('$v_x$, $\mu$m/min', 'interpreter', 'latex');
 ylabel('\textrm{$\%$}', 'interpreter', 'latex');
-
-%  cleanfigure;
-%  matlab2tikz('histogram_vx2.tikz', 'showInfo', false,'parseStrings',false, ...
-%          'standalone', false,'height', '3cm', 'width','4cm');
-
+matlab2tikz([TikzFolder,'vx2_',Injury,num2str(iFish),'.tikz'], 'showInfo', false,'parseStrings',false, ...
+         'standalone', false,'height', '3cm', 'width','4cm');
 fig('Vy hist. 2',visFlag)
 [counts, binValues] = hist(Vy_2, numberOfBins);
 normalizedCounts = 100 * counts / sum(counts);
@@ -466,18 +471,15 @@ line([Mean_y, Mean_y], yylim, 'LineWidth', 1, 'Color', 'r');
 text(Mean_y +2, 50,['$\mu_y$=',num2str(Mean_y)],'Color','k','FontSize',20);
 xlabel('$v_y$, $\mu$m/min', 'interpreter', 'latex');
 ylabel('\textrm{$\%$}', 'interpreter', 'latex');
-
-%  cleanfigure;
-%  matlab2tikz('histogram_vy2.tikz', 'showInfo', false,'parseStrings',false, ...
-%          'standalone', false,'height', '3cm', 'width','3cm');
-%      
+matlab2tikz([TikzFolder,'vy2_',Injury,num2str(iFish),'.tikz'], 'showInfo', false,'parseStrings',false, ...
+         'standalone', false,'height', '3cm', 'width','4cm');
+      
 Med_x = median(Vx_3);
 Mean_x = mean(Vx_3);
 Med_y = median(Vy_3);
 Mean_y = mean(Vy_3);
 yylim = [0 55];
 fig('Vx hist. 3',visFlag)
-% title('Velocity histogram')
 [counts, binValues] = hist(Vx_3, numberOfBins);
 normalizedCounts = 100 * counts / sum(counts);
 p1 = bar(binValues, normalizedCounts, 'barwidth', 1);
@@ -488,11 +490,8 @@ line([Mean_x, Mean_x], yylim, 'LineWidth', 1, 'Color', 'r');
 text(Mean_x +2, 50,['$\mu_x$=',num2str(Mean_x)],'Color','k','FontSize',20);
 xlabel('$v_x$, $\mu$m/min', 'interpreter', 'latex');
 ylabel('\textrm{$\%$}', 'interpreter', 'latex');
-
-%  cleanfigure;
-%  matlab2tikz('histogram_vx3.tikz', 'showInfo', false,'parseStrings',false, ...
-%          'standalone', false,'height', '3cm', 'width','4cm');
-
+matlab2tikz([TikzFolder,'vx3_',Injury,num2str(iFish),'.tikz'], 'showInfo', false,'parseStrings',false, ...
+         'standalone', false,'height', '3cm', 'width','4cm');
 fig('Vy hist. 3',visFlag)
 [counts, binValues] = hist(Vy_3, numberOfBins);
 normalizedCounts = 100 * counts / sum(counts);
@@ -504,11 +503,8 @@ line([Mean_y, Mean_y], yylim, 'LineWidth', 1, 'Color', 'r');
 text(Mean_y +2, 50,['$\mu_y$=',num2str(Mean_y)],'Color','k','FontSize',20);
 xlabel('$v_y$, $\mu$m/min', 'interpreter', 'latex');
 ylabel('\textrm{$\%$}', 'interpreter', 'latex');
-
-%  cleanfigure;
-%  matlab2tikz('histogram_vy3.tikz', 'showInfo', false,'parseStrings',false, ...
-%          'standalone', false,'height', '3cm', 'width','3cm');
-%      
+matlab2tikz([TikzFolder,'vy3_',Injury,num2str(iFish),'.tikz'], 'showInfo', false,'parseStrings',false, ...
+         'standalone', false,'height', '3cm', 'width','4cm');
 
 %%
 fig('Positions',visFlag);
@@ -548,7 +544,7 @@ gg = [0.8,0.8,0.8]; % extra colour for cells
 %%
 % fig3
 % Cell tracks colored with modes
-figure; set(gcf,'color','w');
+fig('Modes',visFlag)
 imshow(A); hold on;
 % hold on;
 for j = Tracks
@@ -562,15 +558,6 @@ end
   for j = 1:nDead
    plot(X_dead{j}(1:end-1,1),X_dead{j}(1:end-1,2),'-','Color',white,'LineWidth',1); hold on; 
   end
-%  for j = Tracks % mark the starting point of each track
-%    if Mode{j}(1) == 1
-%         plot(X_out{j}(1,1),X_out{j}(2,1),'*g','LineWidth',1); hold on;
-%    elseif Mode{j}(1) == 2
-%         plot(X_out{j}(1,1),X_out{j}(2,1),'*b','LineWidth',1); hold on;
-%    else
-%         plot(X_out{j}(1,1),X_out{j}(2,1),'*','Color',white,'LineWidth',1); hold on;
-%    end
-%  end
 xlim(x_lim);ylim(y_lim);
 hold on;
 surf(Yy_grid,Xx_grid,-AA,'FaceColor',white,'EdgeColor',white);
@@ -591,6 +578,7 @@ txt = ('100 $\mu$m');
 text(250,y_max-45, 2,txt,'Color','k','FontSize',20)
 text(70,550,2,txt,'Color','k','FontSize',20)
 set(gca,'Ydir','reverse')
+print([FigFolder,'modes_all_',Injury,num2str(iFish)],saveFormat)
 %% Cell tracks colored with modes
 % Mode 1
 fig('Mode 1',visFlag);
@@ -612,6 +600,8 @@ line([250,250+100*cc],[y_max-20,y_max-20],[2,2],'Color','k','LineWidth',5);
 txt = ('100 $\mu$m');
 text(250,y_max-45, 2,txt,'Color','k','FontSize',20)
 set(gca,'Ydir','reverse')
+tightfig;
+print([FigFolder,'mode_1_',Injury,num2str(iFish)],saveFormat)
 
 % Mode 2
 fig('Mode 2',visFlag);
@@ -633,6 +623,8 @@ line([250,250+100*cc],[y_max-20,y_max-20],[2,2],'Color','k','LineWidth',5);
 txt = ('100 $\mu$m');
 text(250,y_max-45, 2,txt,'Color','k','FontSize',20)
 set(gca,'Ydir','reverse')
+tightfig;
+print([FigFolder,'mode_2_',Injury,num2str(iFish)],saveFormat)
 
 % Mode 3
 fig('Mode 3',visFlag);
@@ -654,8 +646,10 @@ hold on;
 txt = ('100 $\mu$m');
 text(250,y_max-45, 2,txt,'Color','k','FontSize',24)
 set(gca,'Ydir','reverse')
+tightfig;
+print([FigFolder,'mode_3_',Injury,num2str(iFish)],saveFormat)
 %% fig6 - Heatmap
-figure; set(gcf,'color','w');
+fig('Heatmap',visFlag);
 imshow(A); hold on;
 plot_heatmap(Theta,Z,knots,grid_limits,basis_type);
 % alpha(0.5)
@@ -670,12 +664,5 @@ txt = ('100 $\mu$m');
 text(250,y_max-45, 2,txt,'Color','k','FontSize',20)
 % text(70,550, 2,txt,'Color','k','FontSize',20)
 set(findall(gcf,'-property','FontSize'),'FontSize',24)
-set(gca,'Ydir','reverse')
-%% Save into file
-if hour==0
-  filename = ['Theta_mild_' num2str(iFish)];
-else
-  filename = ['Theta_mild_' num2str(iFish) '_hr_' num2str(hour)]; 
-end
-save(filename,'Theta');
-
+set(gca,'Ydir','reverse');
+print([FigFolder,'heatmap_',Injury,num2str(iFish)],saveFormat)

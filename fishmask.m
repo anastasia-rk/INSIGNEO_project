@@ -6,7 +6,7 @@
     [~,threshold] = edge(A,'canny');
     fudgeFactor = 0.5;
  %use edge to obtain mask with tuned threshold
-    Aedge = edge(A2d,'canny',threshold*fudgeFactor);
+    Aedge = edge(A,'canny',threshold*fudgeFactor);
  % create convex hull to join up holes in image
     Aconv = bwconvhull(Aedge,'objects');
  % fill gaps by dilating canny image, create two perpendicular linear structing elements

@@ -88,9 +88,9 @@ y_lim = [padH y_max-padH];
 %basis_type = 'gaussian';
 basis_type = 'bspline';
 % Set up limits of the grid: x_min,y_min,x_max,y_max
-grid_limits = [0, 0, x_max - padW/2, y_max];
+grid_limits = [0, 0, x_max, y_max];
 % Set up number of basis functions
-nx = 5; ny = 4; order = 4;
+nx = 6; ny = 6; order = 4;
 [knots] = setup_spline_support(grid_limits,nx,ny,order); % spline support nodes
 Z = 0;
 ll = size(knots,2)/2; % size of parameter vector
@@ -113,9 +113,9 @@ x_len = 4; % size of the state vector
 % Transition matrix
 I =   eye(2,2);
 O = zeros(2,2);
-thta1 = T/10; % reversion to mean in O-U process 
-thta2 = T/4; % reversion to mean in O-U process 
-thta3 = T/4; % reversion to mean in O-U process 
+thta1 = 0.3; % reversion to mean in O-U process 
+thta2 = 0.3; % reversion to mean in O-U process 
+thta3 = 0.5; % reversion to mean in O-U process 
 
 mean_vel = 0; % mu of O-U process
 % brownian motoion with friction  (velocity as O-U process)
@@ -172,7 +172,7 @@ Candidate = [1:1:n_models];
 % 3 - stationary (random walk)
 F{1} = F_cv;
 F{2} = F_rw;
-F{3} = F_rw;
+F{3} = F_st;
 B{1} = B_cv;
 B{2} = B_rw;
 B{3} = B_rw;
@@ -202,10 +202,10 @@ for k=Tracks % Assign track lengths outside of parfor loop for use in sliced var
 end
 % Create parallel pool
 converged  = false;
-iter_max   = 10;
+iter_max   = 20;
 iter       = 0;
-pool_check = gcp('nocreate');
-if isempty(pool_check)
+pool = gcp('nocreate');
+if isempty(pool)
     pool = parpool('local');
 end
 %% EM loop
@@ -352,7 +352,6 @@ ylabel('$\hat{\phi}_{j,i}$')
 legend(thisline,names);
 % {'$\hat{\phi}_{1,1}$','$\hat{\phi}_{1,2}$','$\hat{\phi}_{2,1}$','$\hat{\phi}_{2,2}$'}
 print([FigFolder,'phi_convergence_',Injury,num2str(iFish)],saveFormat)
-cleanfigure;
 matlab2tikz([TikzFolder,'phi_convergence_',Injury,num2str(iFish),'.tikz'], 'showInfo', false,'parseStrings',false, ...
          'standalone', false,'height', '3cm', 'width','4cm');
 %% Extract velocities from resampled tracks
@@ -412,7 +411,6 @@ text(Mean_x +2, 50,['$\mu_x$=',num2str(Mean_x)],'Color','k','FontSize',20);
 xlabel('$v_x$, $\mu$m/min', 'interpreter', 'latex');
 ylabel('\textrm{$\%$}', 'interpreter', 'latex');
 % 
-cleanfigure;
 matlab2tikz([TikzFolder,'vx_',Injury,num2str(iFish),'.tikz'], 'showInfo', false,'parseStrings',false, ...
          'standalone', false,'height', '3cm', 'width','4cm');
 fig('Vy hist. 1',visFlag)
@@ -426,7 +424,6 @@ line([Mean_y, Mean_y], yylim, 'LineWidth', 1, 'Color', 'r');
 text(Mean_y +2, 50,['$\mu_y$=',num2str(Mean_y)],'Color','k','FontSize',20);
 xlabel('$v_y$, $\mu$m/min', 'interpreter', 'latex');
 ylabel('\textrm{$\%$}', 'interpreter', 'latex');
-cleanfigure;
 matlab2tikz([TikzFolder,'vy1_',Injury,num2str(iFish),'.tikz'], 'showInfo', false,'parseStrings',false, ...
          'standalone', false,'height', '3cm', 'width','4cm');
 Med_x = median(Vx_2);
@@ -446,7 +443,6 @@ line([Mean_x, Mean_x], yylim, 'LineWidth', 1, 'Color', 'r');
 text(Mean_x +2, 50,['$\mu_x$=',num2str(Mean_x)],'Color','k','FontSize',20);
 xlabel('$v_x$, $\mu$m/min', 'interpreter', 'latex');
 ylabel('\textrm{$\%$}', 'interpreter', 'latex');
-cleanfigure;
 matlab2tikz([TikzFolder,'vx2_',Injury,num2str(iFish),'.tikz'], 'showInfo', false,'parseStrings',false, ...
          'standalone', false,'height', '3cm', 'width','4cm');
 fig('Vy hist. 2',visFlag)
@@ -460,7 +456,6 @@ line([Mean_y, Mean_y], yylim, 'LineWidth', 1, 'Color', 'r');
 text(Mean_y +2, 50,['$\mu_y$=',num2str(Mean_y)],'Color','k','FontSize',20);
 xlabel('$v_y$, $\mu$m/min', 'interpreter', 'latex');
 ylabel('\textrm{$\%$}', 'interpreter', 'latex');
-cleanfigure;
 matlab2tikz([TikzFolder,'vy2_',Injury,num2str(iFish),'.tikz'], 'showInfo', false,'parseStrings',false, ...
          'standalone', false,'height', '3cm', 'width','4cm');
       
@@ -480,7 +475,6 @@ line([Mean_x, Mean_x], yylim, 'LineWidth', 1, 'Color', 'r');
 text(Mean_x +2, 50,['$\mu_x$=',num2str(Mean_x)],'Color','k','FontSize',20);
 xlabel('$v_x$, $\mu$m/min', 'interpreter', 'latex');
 ylabel('\textrm{$\%$}', 'interpreter', 'latex');
-cleanfigure;
 matlab2tikz([TikzFolder,'vx3_',Injury,num2str(iFish),'.tikz'], 'showInfo', false,'parseStrings',false, ...
          'standalone', false,'height', '3cm', 'width','4cm');
 fig('Vy hist. 3',visFlag)
@@ -494,7 +488,6 @@ line([Mean_y, Mean_y], yylim, 'LineWidth', 1, 'Color', 'r');
 text(Mean_y +2, 50,['$\mu_y$=',num2str(Mean_y)],'Color','k','FontSize',20);
 xlabel('$v_y$, $\mu$m/min', 'interpreter', 'latex');
 ylabel('\textrm{$\%$}', 'interpreter', 'latex');
-cleanfigure;
 matlab2tikz([TikzFolder,'vy3_',Injury,num2str(iFish),'.tikz'], 'showInfo', false,'parseStrings',false, ...
          'standalone', false,'height', '3cm', 'width','4cm');
 

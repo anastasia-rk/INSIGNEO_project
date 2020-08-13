@@ -48,5 +48,4 @@ Z_min = min(Z_sum);
 Z_min_min = min(Z_min);
 contour(X_grid, Y_grid, Z_sum), hold on    % plot level surfaces
 quiver(X_grid, Y_grid, dx, dy, 1, 'k'); % plot vector field
-plotted = true;
 end
