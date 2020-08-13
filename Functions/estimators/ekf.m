@@ -11,9 +11,9 @@ for i=1:length(x_tt)
     H(:,i) = (measfun(xx,C) - measfun(x_tt,C))./dx;
 end
 %% Suboptimal estimation
-x_t1t   = dynfun (x_tt,A,B,theta,knots,order);     % prior mean
+x_t1t   = dynfun (x_tt,A,B,theta,knots,order);  % prior mean
 P_t1t   = F*P_tt*F' + Q;                        % prior covariance
-d_y     = y - mfun(x_t1t);                      % estimation error    
+d_y     = y - measfun(x_tt,C);                  % estimation error    
 S       = H*P_t1t*H' + R;                       % error covariance
 S_inv   = pinv(S);
 K       = P_t1t*H'*S_inv;                       % Kalman gain

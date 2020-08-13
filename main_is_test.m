@@ -91,8 +91,11 @@ Sig_w{1} = G{1}*(inv(G{1}'*G{1}))'*Q_cv_inv*inv(G{1}'*G{1})*G{1}';
 Sig_w{2} = G{2}*(inv(G{2}'*G{2}))'*Q_rw_inv*inv(G{2}'*G{2})*G{2}';
 %% Monte Carlo loop
 L = 20;                                                                     % number of particles
-models = [1:50];                                                            % Monte-Carlo simulations
-pool =  parpool('local');
+models = [1];                                                               % Monte-Carlo simulations
+pool = gcp('nocreate');
+if isempty(pool)
+    pool = parpool('local');
+end
 for iModel = models
 clear X Y Mode_model
 load([folderName,'simulated_tracks_' num2str(iModel)]);

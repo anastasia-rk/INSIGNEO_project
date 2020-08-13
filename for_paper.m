@@ -204,8 +204,8 @@ end
 converged  = false;
 iter_max   = 20;
 iter       = 0;
-pool_check = gcp('nocreate');
-if isempty(pool_check)
+pool = gcp('nocreate');
+if isempty(pool)
     pool = parpool('local');
 end
 %% EM loop
