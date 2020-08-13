@@ -45,9 +45,9 @@ switch basis_type
 end
 Z_min = min(Z_sum);
 Z_min_min = min(Z_min);
-a_min = min(min(Z_sum));
-a_max = max(max(Z_sum));
-p = pcolor(X_grid,Y_grid,Z_sum);
+a_min = min(min(Z_sum-Z_min));
+a_max = max(max(Z_sum-Z_min));
+p = pcolor(X_grid,Y_grid,Z_sum-Z_min);
 view(2);
 shading interp
 caxis manual
