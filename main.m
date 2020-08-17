@@ -96,9 +96,15 @@ Z = 0;
 ll = size(knots,2)/2; % size of parameter vector
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Room for Kate
-% create a multi-resolution grid of b-splines
-% coars and fine grid.  knots - support points, ll - number of splines (overall)
+side1 = knots(1,2) - knots(1,1);                                    % along x axis
+side2 = knots(2,2) - knots(2,1);                                    % along y axis
+
+mx = 4; my = 4;
+[knots1] = setup_spline_support(grid_limits,mx,my,order);
+side11 = knots1(1,2)-knots(1,1);
+side22 = knots1(2,2)-knots(2,1);
+tt = size(knots1,2)/2;
+Theta1 = 1:16 %zeros(tt,1);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Initialise field model parameters
@@ -271,11 +277,11 @@ Missing_info = (sum1*Theta - sum2)*(sum1*Theta_old - sum2)';
 %% Check convergence
 fprintf('Checking convergence condition... \n')
 [converged_theta]   = converge_param(Theta,Theta_old,iter);
-<<<<<<< HEAD
+%<<<<<<< HEAD
 [converged_phi]     = converge_param(reshape(p_tr,1,[]),reshape(p_tr_old,1,[]),iter);
-=======
+%=======
 [converged_phi]     = converge_param(p_tr(:),p_tr_old(:),iter);
->>>>>>> sharc
+%>>>>>>> sharc
 % [converged_r]       = converge_param(vec(R),vec(R_old),iter);
     if converged_theta & converged_phi % & converged_r                      % if convergence condition fulfilled
         break;
@@ -655,3 +661,42 @@ text(250,y_max-45, 2,txt,'Color','k','FontSize',20)
 set(findall(gcf,'-property','FontSize'),'FontSize',24)
 set(gca,'Ydir','reverse');
 print([FigFolder,'heatmap_',Injury,num2str(iFish)],saveFormat)
+%% fig 7 
+fig('Surface',visFlag);
+%view(3)
+%colormap(my_map);
+for j=1:length(Theta)
+   switch basis_type
+        case 'gaussian'
+            xx = knots(1,j);
+            yy = knots(2,j);
+        case 'bspline'
+            a = knots(1,j*2-1);
+            b = knots(2,j*2-1);
+            xx = a + side1/2 - 30;
+            yy = b + side2/2 - 30;
+            
+   end
+    Theta_temp = zeros(length(Theta),1);                              % zero scaling coeffs for all bfs
+    Theta_temp(j) = Theta(j);                                         % only choose one scaling coeff to non-zero
+    plot_surface(Theta_temp,Z,knots,grid_limits,basis_type,0.25);
+end
+hold on
+for j=1:length(Theta1)
+   switch basis_type
+        case 'gaussian'
+            xx = knots1(1,j);
+            yy = knots1(2,j);
+        case 'bspline'
+            a = knots1(1,j*2-1);
+            b = knots1(2,j*2-1);
+            xx = a + side1/2 - 30;
+            yy = b + side2/2 - 30;
+            
+   end
+    Theta_temp1 = zeros(length(Theta1),1);                              % zero scaling coeffs for all bfs
+    Theta_temp1(j) = Theta1(j);  
+    plot_surface(Theta_temp1,Z,knots1,grid_limits,basis_type,1);
+end
+
+hold off
