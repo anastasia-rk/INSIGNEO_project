@@ -1,4 +1,4 @@
-iFish = 1;
+iFish = 2;
 % Load tracking data
 load([folderName,'tracks_' num2str(iFish)]);
 % Load brightfield image
@@ -9,7 +9,7 @@ Cnt = rgb2gray(A);
 BW = fishmask(Cnt);
 %%
 padH = 000; % vertical padding
-padW = 00;% horizontal padding
+padW = 200;% horizontal padding
 A = padarray(A,[padH, padW]); % creating a padded image
 for i=1:nTracks
     X{i}(:,1) = X{i}(:,1) + padW;
@@ -23,8 +23,8 @@ y_lim = [padH y_max-padH];
 %
 %%
 AA = double(BW); % create a surface
-Xx = 1:1:size(AA,2); % create the grid of x coords
-Yy = 1:1:size(AA,1); % create the grid of y coords
+Xx = 1:1:size(A,2); % create the grid of x coords
+Yy = 1:1:size(A,1); % create the grid of y coords
 [Yy_grid,Xx_grid] = meshgrid(Xx,Yy); % mesh
 white=[1,1,1]; % surface colour
 gg = [0.8,0.8,0.8]; % extra colour for cells

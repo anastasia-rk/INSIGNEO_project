@@ -96,17 +96,6 @@ Z = 0;
 ll = size(knots,2)/2; % size of parameter vector
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-mx = 4; my = 4;
-[knots1] = setup_spline_support(grid_limits,mx,my,order);
-tt = size(knots1,2)/2
-Theta_model1 = zeros(tt,1);
-Theta_temp1 = zeros(length(Theta_model1),1);
-plot_surface(Theta_temp1,Z,knots1,grid_limits,bspline,0.5);
-hold on
-Theta_model = zeros(ll,1);
-Theta_temp = zeros(length(Theta_model),1);                              
-Theta_temp(j) = Theta_model(j);                                         
-plot_surface(Theta_temp,Z,knots,grid_limits,bspline,0.25);
 % Room for Kate
 % create a multi-resolution grid of b-splines
 % coars and fine grid.  knots - support points, ll - number of splines (overall)

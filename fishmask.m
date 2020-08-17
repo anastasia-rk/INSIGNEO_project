@@ -31,6 +31,9 @@
     Ablurry = blurryImage > 0.5;
 %fill holes again 
     BW = imfill(Ablurry, 'holes');
+padH = 000; % vertical padding
+padW = 200;% horizontal padding
+BW = padarray(BW,[padH, padW]);
 %show og image next to mask 
     %imshow(mask)
     %title('Image Mask');
