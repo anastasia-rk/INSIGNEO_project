@@ -1,0 +1,15 @@
+folderName='Recruitment/huttenlocher_injury/';
+iFish = 1;
+load([folderName,'tracks_' num2str(iFish)]);
+A = imread([folderName,'bf_' num2str(iFish),'.png']); % for huttenlocher injury 
+    Cnt = rgb2gray(A); 
+    [y_max,x_max,zz] = size(A);
+    BW = fishmask(Cnt);
+    AA = double(BW); % create a surface
+    Xx = 1:1:size(A,2); % create the grid of x coords
+    Yy = 1:1:size(A,1); % create the grid of y coords
+    [Yy_grid,Xx_grid] = meshgrid(Xx,Yy); % mesh
+    white=[1,1,1]; % surface colour
+    gg = [0.8,0.8,0.8]; % extra colour for cells
+    figure; set(gcf,'color','w');
+    imshow(A); hold on;

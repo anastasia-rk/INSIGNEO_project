@@ -1,23 +1,11 @@
 folderName='Recruitment/normal_injury/';
 iFish = 1;
-
-
-    load([folderName,'tracks_' num2str(iFish)]);
+load([folderName,'tracks_' num2str(iFish)]);
 % Load brightfield image
 A = imread([folderName,'bf_' num2str(iFish),'.png']); % for huttenlocher injury 
 Cnt = rgb2gray(A); 
-[y_max,x_max,zz] = size(A);
 % Load the mask
 BW = fishmask(Cnt);
-% For data split into hours
-hour = 0;
-if hour~=0
-    X = XX;
-    Y = YY;
-    nTracks = nTracks_t;
-end
-Tracks = 1:nTracks;
-% Create a frame around the image to extend basis function support;
 padH = 0; % vertical padding
 padW = 200; % horizontal padding
 A = padarray(A,[padH, padW]); % creating a padded image
@@ -30,25 +18,13 @@ end
 [y_max,x_max,zz] = size(A);
 x_lim = [padW x_max-padW];
 y_lim = [padH y_max-padH];
-
-   AA = double(BW); % create a surface
+AA = double(BW); % create a surface
 Xx = 1:1:size(A,2); % create the grid of x coords
 Yy = 1:1:size(A,1); % create the grid of y coords
 [Yy_grid,Xx_grid] = meshgrid(Xx,Yy); % mesh
 white=[1,1,1]; % surface colour
 gg = [0.8,0.8,0.8]; % extra colour for cells 
-    
-    fig('Tracks',visFlag)
-imshow(A); hold on;
-% hold on;
-for j = Tracks
-   plot(Y{j}(:,1),Y{j}(:,2),'-w','LineWidth',1); hold on; 
-end
+    imshow(A); hold on;
 surf(Yy_grid,Xx_grid,-AA,'FaceColor',white,'EdgeColor',white);
 view(2)
 xlim(x_lim);ylim(y_lim);
-hold on;
-line([250,250+100*cc],[y_max-20,y_max-20],[2,2],'Color','k','LineWidth',5);
-txt = ('100 $\mu$m');
-text(250,y_max-70, 2,txt,'Color','k','FontSize',20)
-set(gca,'Ydir','reverse')

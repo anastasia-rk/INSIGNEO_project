@@ -1,3 +1,4 @@
+folderName='Recruitment/normal_injury/';
 iFish = 2;
 % Load tracking data
 load([folderName,'tracks_' num2str(iFish)]);
