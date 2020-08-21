@@ -1,4 +1,4 @@
-local_init;
+%local_init;
 %% Load data
 list = {'Normal','Mild','Hutt','Severe'};
 [selected,tf] = listdlg('ListString',list,'SelectionMode','single');

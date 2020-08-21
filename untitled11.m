@@ -38,17 +38,41 @@ Yy = 1:1:size(A,1); % create the grid of y coords
 white=[1,1,1]; % surface colour
 gg = [0.8,0.8,0.8]; % extra colour for cells 
     
-    fig('Tracks',visFlag)
-imshow(A); hold on;
-% hold on;
-for j = Tracks
-   plot(Y{j}(:,1),Y{j}(:,2),'-w','LineWidth',1); hold on; 
+
+%view(3)
+%colormap(my_map);
+for j=1:length(Theta)
+   switch basis_type
+        case 'gaussian'
+            xx = knots(1,j);
+            yy = knots(2,j);
+        case 'bspline'
+            a = knots(1,j*2-1);
+            b = knots(2,j*2-1);
+            xx = a + side1/2 - 30;
+            yy = b + side2/2 - 30;
+            
+   end
+    Theta_temp = zeros(length(Theta),1);                              % zero scaling coeffs for all bfs
+    Theta_temp(j) = Theta(j);                                         % only choose one scaling coeff to non-zero
+    plot_surface(Theta_temp,Z,knots,grid_limits,basis_type,0.25);
 end
-surf(Yy_grid,Xx_grid,-AA,'FaceColor',white,'EdgeColor',white);
-view(2)
-xlim(x_lim);ylim(y_lim);
-hold on;
-line([250,250+100*cc],[y_max-20,y_max-20],[2,2],'Color','k','LineWidth',5);
-txt = ('100 $\mu$m');
-text(250,y_max-70, 2,txt,'Color','k','FontSize',20)
-set(gca,'Ydir','reverse')
+hold on
+for j=1:length(Theta1)
+   switch basis_type
+        case 'gaussian'
+            xx = knots1(1,j);
+            yy = knots1(2,j);
+        case 'bspline'
+            a = knots1(1,j*2-1);
+            b = knots1(2,j*2-1);
+            xx = a + side1/2 - 30;
+            yy = b + side2/2 - 30;
+            
+   end
+    Theta_temp1 = zeros(length(Theta1),1);                              % zero scaling coeffs for all bfs
+    Theta_temp1(j) = Theta1(j);  
+    plot_surface(Theta_temp1,Z,knots1,grid_limits,basis_type,1);
+end
+
+hold off
