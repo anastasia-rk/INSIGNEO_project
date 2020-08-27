@@ -60,7 +60,4 @@ for t=2:T
 %    end
 %    P_merged{t} = pv;
 end % for filter (t)
-%    X_out{k}(:,t) = x_merged{T};    % merged state
-%    P_out{k,T}(:,:) = P_merged{T};  % merged covariance
-%    P_for_resampling{k}(T,:,:) = P_merged{T};  % merged covariance
 end

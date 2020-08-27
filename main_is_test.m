@@ -117,7 +117,7 @@ fprintf('E-step... \n')
 iter = iter + 1;  
 %% Parfor loop for IMM
 tic
-parfor k=Tracks     
+for k=Tracks     
 %% recurtion cycle for IMM filter
     [x_m,P,mu,mode_probable_f{k}] = IMM_forward(T(k),x_len,n_models,p_tr,mu_0,Y{k},Q,R,F,B,C,Theta,knots,order);
 %% Recurtion cycle for IMM RTS smoother
@@ -161,7 +161,8 @@ parfor k=Tracks
          % compute true pdf for each particle
          numers = pdf(mixture{k}{t},x_tilde);
          % compute particle weights
-         weights = numers./denoms;
+         weights =  ones(size(numers));  % numers./denoms;
+%          weights = weights/sum(weights);
          % transpose the vector to use in the dynamical function readily
          x_tilde = x_tilde'; 
          grads = gradient_compute(x_tilde,knots,order);
@@ -174,7 +175,8 @@ parfor k=Tracks
             % compute true pdf for each particle
             numers_j = pdf(mixture{k}{t+1},x_j_tilde);
             % compute particle weights
-            weights_j = numers_j./denoms_j;
+            weights_j = ones(size(numers_j)); %numers_j./denoms_j;
+%             weights_j = weights_j/sum(weights_j);
             % transpose the vector to use in the dynamical function readily
             x_j_tilde = x_j_tilde'; 
             for i=1:L
@@ -220,8 +222,9 @@ Fisher_info{iModel} = Expected_info;
 Miss_fisher{iModel} = Missing_info;
 end % for MC simulation (iModel)
 delete(pool);
+%%
 fiName = ['Results/is_',pattern];
-save(finName);
+save(fiName);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Example track - filtered, smoothed, conditioned
 fig('Track',visFlag); 

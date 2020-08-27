@@ -3,6 +3,7 @@ local_init;
 list = {'Normal','Mild','Hutt','Severe'};
 [selected,tf] = listdlg('ListString',list,'SelectionMode','single');
 Injury = list{selected};
+flagGray = false;
 switch Injury
     case 'Normal'
          folderName = 'Recruitment/normal_injury/';
@@ -14,6 +15,7 @@ switch Injury
          cc = 0.93; % scaling coefficient for the scale bar
          T  = 1.5;  % time increment
          nFish = 5; % number of fish to process
+         flagGray = true;
     case 'Hutt'
          folderName = 'Recruitment/huttenlocher_injury/';
          cc = 0.99; % scaling coefficient for the scale bar
@@ -31,7 +33,11 @@ iFish = 1;
 load([folderName,'tracks_' num2str(iFish)]);
 % Load brightfield image
 A = imread([folderName,'bf_' num2str(iFish),'.png']); % for huttenlocher injury 
-Cnt = rgb2gray(A); 
+if ~flagGray
+    Cnt = rgb2gray(A);
+else
+    Cnt = A;
+end
 [y_max,x_max,zz] = size(A);
 % Load the mask
 load([folderName,'mask_',num2str(iFish)]); % downloads variable BW

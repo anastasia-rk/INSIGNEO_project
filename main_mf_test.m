@@ -151,7 +151,7 @@ p_tr = transitions{iter}
 %% Field parameters
 sum1 = 0; sum2 =  0; sum3 = 0;
 tic
-parfor k=Tracks
+for k=Tracks
      for t=1:T(k)-1
          x_tilde = X_out{k}(:,t);
          grad = gradient_bspline(x_tilde(1:2),knots,order);
