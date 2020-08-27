@@ -31,4 +31,8 @@ for i=1:knot_nx-order
         knots(2,k+1) 	= y_knot(j+4);  % right-most point, x coordinate
         k = k + 2;
     end
+    
+    
+    
+    
 end

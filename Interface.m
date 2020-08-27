@@ -22,7 +22,7 @@ function varargout = Interface(varargin)
 
 % Edit the above text to modify the response to help Interface
 
-% Last Modified by GUIDE v2.5 21-Aug-2020 11:42:40
+% Last Modified by GUIDE v2.5 25-Aug-2020 11:01:12
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -438,10 +438,12 @@ function pushbutton1_Callback(hObject, eventdata, handles)
 % hObject    handle to pushbutton1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-global order nx ny
+global order nx ny my mx 
 order = str2num(char(get(handles.edit1,'String')));
-nx = str2num(char(get(handles.edit3,'String')));
-ny = str2num(char(get(handles.edit4,'String')));
+nx = str2num(char(get(handles.edit4,'String')));
+ny = str2num(char(get(handles.edit8,'String')));
+mx = str2num(char(get(handles.edit5,'String')));
+my = str2num(char(get(handles.edit6,'String')));
 
 
 
@@ -565,5 +567,51 @@ function pushbutton2_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 global Name iFish
-name =  [Name ,iFish]
+name =  [Name,num2str(iFish)]
 saveas(gcf,name,'png')
+
+
+
+function edit8_Callback(hObject, eventdata, handles)
+% hObject    handle to edit8 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of edit8 as text
+%        str2double(get(hObject,'String')) returns contents of edit8 as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function edit8_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit8 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes on selection change in listbox4.
+function listbox4_Callback(hObject, eventdata, handles)
+% hObject    handle to listbox4 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns listbox4 contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from listbox4
+
+
+% --- Executes during object creation, after setting all properties.
+function listbox4_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to listbox4 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: listbox controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end

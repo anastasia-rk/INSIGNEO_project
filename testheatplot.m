@@ -112,7 +112,7 @@ mu_field = 1;
         
         
         
-fig('Heatmap',visFlag);
+%fig('Heatmap',visFlag);
 imshow(A); hold on;
 plot_heatmap(Theta,Z,knots,grid_limits,basis_type);
 hold on
@@ -130,9 +130,9 @@ text(250,y_max-45, 2,txt,'Color','k','FontSize',20)
 % text(70,550, 2,txt,'Color','k','FontSize',20)
 set(findall(gcf,'-property','FontSize'),'FontSize',24)
 set(gca,'Ydir','reverse');
-print([FigFolder,'heatmap_',Injury,num2str(iFish)],saveFormat)
+%print([FigFolder,'heatmap_',Injury,num2str(iFish)],saveFormat)
 
-fig('Surface',visFlag);
+%fig('Surface',visFlag);
 %view(3)
 %colormap(my_map);
 for j=1:length(Theta)

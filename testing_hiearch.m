@@ -67,14 +67,6 @@ imshow(A); hold on;
 for j = Tracks
    plot(Y{j}(:,1),Y{j}(:,2),'-w','LineWidth',1); hold on; 
 end
-%%%%%%%%%%%%%%%
-%for j=Tracks 
-%    for i=0:100
-%bx=Y{j}(:,1)(abs(Y{j}(:,1)-i)<50); 
-%by=Y{j}(:,2)(abs(Y{j}(:,2)-i)<50);
-%num_b=numel(bx);
-%    end
-%end 
 
 surf(Yy_grid,Xx_grid,-AA,'FaceColor',white,'EdgeColor',white);
 view(2)
@@ -85,37 +77,6 @@ txt = ('100 \mu m');
 text(250,y_max-70, 2,txt,'Color','k','FontSize',20)
 set(gca,'Ydir','reverse')
 
-
-%% trying to split into tiles 
-%figure;
-
-%C = mat2tiles(A,[50,100])
-%[m,n] = size(C)
-%B=cell2mat(C(randperm(m), randperm(n)));
-%imshow(B)
-
-imSz = size(A);
-patchSz = [200 350];
-xIdxs = [1:patchSz(2):imSz(2) imSz(2)+1];
-yIdxs = [1:patchSz(1):imSz(1) imSz(1)+1];
-patches = cell(length(yIdxs)-1,length(xIdxs)-1)
-for i = 1:length(yIdxs)-1
-    Isub = A(yIdxs(i):yIdxs(i+1)-1,:);
-    for j = 1:length(xIdxs)-1
-        patches{i,j} = Isub(:,xIdxs(j):xIdxs(j+1)-1);
-    end
-end
-figure, imagesc(patches{3,3})
-
-%% histogram plot for concentrations - didnt really work 
-figure;
-for j = Tracks
-    nbins=[90 90];
-[N,C]=hist3([Y{j}(:,1), Y{j}(:,2)],nbins)
-contourf(C{1},C{2},N)
-  hold on 
-end
-%%
 
 figure;
 basis_type = 'bspline';
@@ -129,12 +90,6 @@ ll = size(knots,2)/2; % size of parameter vector
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 side1 = knots(1,2) - knots(1,1);                             % along x axis
 side2 = knots(2,2) - knots(2,1);                             % along y axis
-mx=4; my=4
-[knots1] = setup_spline_support(grid_limits,mx,my,order);
-side11 = knots1(1,2)-knots(1,1);
-side22 = knots1(2,2)-knots(2,1);
-tt = size(knots1,2)/2;
-Theta1 = 1:mx*my; %zeros(tt,1);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Initialise field model parameters
 grid_limits1 = grid_limits;
@@ -161,22 +116,3 @@ for j=1:length(Theta)
     Theta_temp(j) = Theta(j);                                         % only choose one scaling coeff to non-zero
     plot_surface(Theta_temp,Z,knots,grid_limits,basis_type,0.25);
 end
-hold on
-for j=1:length(Theta1)
-   switch basis_type
-        case 'gaussian'
-            xx = knots1(1,j);
-            yy = knots1(2,j);
-        case 'bspline'
-            a = knots1(1,j*2-1);
-            b = knots1(2,j*2-1);
-           xx = a + side1/2 - 30;
-           yy = b + side2/2 - 30;
-            
-   end
-    Theta_temp1 = zeros(length(Theta1),1);                              % zero scaling coeffs for all bfs
-    Theta_temp1(j) = Theta1(j);  
-    plot_surface(Theta_temp1,Z,knots1,grid_limits,basis_type,1);
-end
-
-hold off

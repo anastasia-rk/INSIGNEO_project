@@ -98,7 +98,7 @@ Yy = 1:1:size(A,1); % create the grid of y coords
 white=[1,1,1]; % surface colour
 gg = [0.8,0.8,0.8]; % extra colour for cells
 %% Cell tracks on a fish with a mask
-fig('Tracks',visFlag)
+%fig('Tracks',visFlag)
 imshow(A); hold on;
 % hold on;
 for j = Tracks
@@ -114,7 +114,7 @@ text(250,y_max-70, 2,txt,'Color','k','FontSize',20)
 set(gca,'Ydir','reverse')
 % print([FigFolder,'modes_all_',Injury,num2str(iFish)],saveFormat)
 %% Field heatmap on a fish with a mask
-fig('Heatmap',visFlag);
+%fig('Heatmap',visFlag);
 imshow(A); hold on;
 plot_heatmap(Theta,Z,knots,grid_limits,basis_type);
 % alpha(0.5)
