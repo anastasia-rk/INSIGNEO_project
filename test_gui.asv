@@ -112,21 +112,40 @@ side2 = knots(2,2) - knots(2,1);
 % for j = Tracks
 %    plot(Y{j}(:,1),Y{j}(:,2),'-w','LineWidth',1); hold on; 
 % end
+
 for i=1:length(Theta)
+   
     counter(i) = 0;
-%     cols{i} = [rand, rand, rand];
+    cols{i} = [rand, rand, rand];
     for j = Tracks
         index = find(Y{j}(:,1)>knots(1,i*2-1) & Y{j}(:,1)<knots(1,i*2) & Y{j}(:,2)>knots(2,i*2-1) & Y{j}(:,2)<knots(2,i*2) );
         if ~isempty(index)
             Y_patch{i,j} = Y{j}(index,:);
-%             plot(Y_patch{i,j}(:,1),Y_patch{i,j}(:,2),'Color',cols{i},'LineWidth',1); hold on; 
+            plot(Y_patch{i,j}(:,1),Y_patch{i,j}(:,2),'Color',cols{i},'LineWidth',1); hold on; 
             counter(i) = counter(i) + length(index);
         end
     end
-%     view(2)
-% xlim(x_lim);ylim(y_lim);
-% set(gca,'Ydir','reverse')
+    view(2)
+xlim(x_lim);ylim(y_lim);
+set(gca,'Ydir','reverse')
 end
+
+%% example patch
+[m,i] = max(counter)
+ fig(num2str(i),visFlag);
+    imshow(A); hold on;
+    a = knots(1,i*2-1);
+    b = knots(2,i*2-1);
+    p=rectangle('Position',[a,b,side1,side2],'Curvature',0.1,'EdgeColor','w'); 
+    hold on;
+       for j = Tracks
+            plot(Y_patch{i,j}(:,1),Y_patch{i,j}(:,2),'Color',cols{i},'LineWidth',1); hold on; 
+        end
+    end
+    view(2)
+xlim(x_lim);ylim(y_lim);
+set(gca,'Ydir','reverse') 
+    
 % surf(Yy_grid,Xx_grid,-AA,'FaceColor',white,'EdgeColor',white);
 % view(2)
 % xlim(x_lim);ylim(y_lim);
@@ -135,22 +154,6 @@ end
 % txt = ('100 $\mu$m');
 % text(250,y_max-70, 2,txt,'Color','k','FontSize',20)
 % % print([FigFolder,'modes_all_',Injury,num2str(iFish)],saveFormat)
-%% example patch
-[m,i] = max(counter);
- fig(num2str(i),visFlag);
-    imshow(A); hold on;
-    a = knots(1,i*2-1);
-    b = knots(2,i*2-1);
-    p=rectangle('Position',[a,b,side1,side2],'Curvature',0.1,'EdgeColor','w'); 
-    hold on;
-       for j = Tracks
-           if ~isempty(Y_patch{i,j})
-            plot(Y_patch{i,j}(:,1),Y_patch{i,j}(:,2),'-g','LineWidth',1); hold on; 
-           end
-       end
-    view(2)
-xlim(x_lim);ylim(y_lim);
-set(gca,'Ydir','reverse') 
 %% Field heatmap on a fish with a mask
 fig('Heatmap',visFlag);
 imshow(A); hold on;
