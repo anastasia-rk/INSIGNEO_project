@@ -57,9 +57,7 @@ mu_field = 1;
 
 figure;
 %colormap(my_map);
-
 for j=1:length(Theta)
-    if Function == 'heatmap'
    switch basis_type
         case 'gaussian'
             xx = knots(1,j);
@@ -73,26 +71,76 @@ for j=1:length(Theta)
    end
     Theta_temp = zeros(length(Theta),1);                              % zero scaling coeffs for all bfs
     Theta_temp(j) = Theta(j); 
-    plot_heatmap(Theta_temp,Z,knots,grid_limits,basis_type);elseif Function == 'surface'
+    
+    plot_Function(Theta_temp,Z,knots,grid_limits,basis_type);
     elseif Function == 's'
-   switch basis_type
-        case 'gaussian'
-            xx = knots(1,j);
-            yy = knots(2,j);
-        case 'bspline'
-            a = knots(1,j*2-1);
-            b = knots(2,j*2-1);
-           xx = a + side1/2 - 30;
-           yy = b + side2/2 - 30;
-            
-   end
-    Theta_temp = zeros(length(Theta),1);                              % zero scaling coeffs for all bfs
-    Theta_temp(j) = Theta(j); 
-    plot_surface(Theta_temp,Z,knots,grid_limits,basis_type,0.5);
+        plot_surface(Theta_temp,Z,knots,grid_limits,basis_type,0.25)
     end
 end
-   
 
 
+load([folderName,'tracks_' num2str(iFish)]);
+% Load brightfield image
+A = imread([folderName,'bf_' num2str(iFish),'.png']); % for huttenlocher injury 
+if ~flagGray 
+        Cnt = rgb2gray(A); 
+    else Cnt = A; 
+    end 
+[y_max,x_max,zz] = size(A);
+% Load the mask
+BW = fishmask(Cnt);
+% For data split into hours
+hour = 0;
+if hour~=0
+    X = XX;
+    Y = YY;
+    nTracks = nTracks_t;
+end
+Tracks = 1:nTracks;
+% Create a frame around the image to extend basis function support;
+padH = 0; % vertical padding
+padW = 200; % horizontal padding
+A = padarray(A,[padH, padW]); % creating a padded image
+for i=Tracks
+    X{i}(:,1) = X{i}(:,1) + padW;
+    X{i}(:,2) = X{i}(:,2) + padH;
+    Y{i}(:,1) = Y{i}(:,1) + padW;
+    Y{i}(:,2) = Y{i}(:,2) + padH;
+end
+[y_max,x_max,zz] = size(A);
+x_lim = [padW x_max-padW];
+y_lim = [padH y_max-padH];
 
+   AA = double(BW); % create a surface
+Xx = 1:1:size(A,2); % create the grid of x coords
+Yy = 1:1:size(A,1); % create the grid of y coords
+[Yy_grid,Xx_grid] = meshgrid(Xx,Yy); % mesh
+white=[1,1,1]; % surface colour
+gg = [0.8,0.8,0.8]; % extra colour for cells 
+
+basis_type = 'bspline';
+% Set up limits of the grid: x_min,y_min,x_max,y_max
+grid_limits = [0, 0, x_max, y_max];
+% Set up number of basis functions 
+[knots] = setup_spline_support(grid_limits,nx,ny,order); % spline support nodes
+Z = 0;
+ll = size(knots,2)/2; % size of parameter vector
+Theta = ones(ll,1);
+% Propotional coefficient (sensitivity)
+mu_field = 1;
+
+%axes(handles.axes1);
+imshow(A); hold on;
+plot_this(Theta,Z,knots,grid_limits,basis_type);
+% alpha(0.5)
+hold on;
+surf(Yy_grid,Xx_grid,-AA,'FaceColor',white,'EdgeColor',white);
+view(2)
+xlim(x_lim);ylim(y_lim);
+hold on;
+line([250,250+100*cc],[y_max-20,y_max-20],[2,2],'Color','k','LineWidth',5);
+txt = ('100 \mu m');
+text(250,y_max-70, 2,txt,'Color','k','FontSize',20)
+set(gca,'Ydir','reverse');
+% print([FigFolder,'heatmap_',Injury,num2str(iFish)],saveFormat)
 

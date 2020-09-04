@@ -277,6 +277,8 @@ function pushbutton1_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 global order nx ny my mx 
+axes(handles.axes1); % Make averSpec the current axes.
+cla reset;
 order = str2num(char(get(handles.edit1,'String')));
 nx = str2num(char(get(handles.edit4,'String')));
 ny = str2num(char(get(handles.edit8,'String')));
@@ -682,7 +684,7 @@ gg = [0.8,0.8,0.8]; % extra colour for cells
         
         basis_type = 'bspline';
 % Set up limits of the grid: x_min,y_min,x_max,y_max
-grid_limits = [0, 0, x_max , y_max ];
+grid_limits = [0, 0, x_max, y_max];
 % Set up number of basis functions
 % nx; ny; order;
 [knots] = setup_spline_support(grid_limits,nx,ny,order); % spline support nodes
@@ -704,7 +706,7 @@ side2 = knots(2,2) - knots(2,1);
 for i=1:length(Theta)
    
     counter(i) = 0;
-    %cols{i} = [rand, rand, rand];
+    cols{i} = [rand, rand, rand];
     for j = Tracks
         index = find(Y{j}(:,1)>knots(1,i*2-1) & Y{j}(:,1)<knots(1,i*2) & Y{j}(:,2)>knots(2,i*2-1) & Y{j}(:,2)<knots(2,i*2) );
         if ~isempty(index)
@@ -727,9 +729,9 @@ end
 %             plot(Y_patch{i,j}(:,1),Y_patch{i,j}(:,2),'-g','LineWidth',1); hold on; 
 %            end
 %        end 
-grid_lim2 = [knots(1,i*2-1),knots(2,i*2-1),knots(1,i*2),knots(2,i*2)];
-px = 2; py = 2; order2 = 4;
-[knots2] = setup_spline_support(grid_lim2,px,py,order2);
+      grid_lim2 = [knots(1,i*2-1),knots(2,i*2-1),knots(1,i*2),knots(2,i*2)];
+%mx = 2; my = 2; order2 = 4;
+[knots2] = setup_spline_support(grid_lim2,mx,my,order);
 %knots(:,i*2-1:i*2) = []
 knotsnew = [knots(:,1:i*2-2),knots2(:,:),knots(:,i*2+1:end)];
 lll = size(knotsnew,2)/2; % size of parameter vector
@@ -742,13 +744,16 @@ axes(handles.axes1);
 if Function == 'heatmap'
     imshow(A); hold on;
 plot_heatmap(Thetanew,Z,knotsnew,grid_limits,basis_type);
+%hold on 
+%plot_heatmap(Thetanew,Z,knots2,grid_lim2,basis_type);
+% alpha(0.5)
 hold on;
 surf(Yy_grid,Xx_grid,-AA,'FaceColor',white,'EdgeColor',white);
 view(2)
 xlim(x_lim);ylim(y_lim);
 hold on;
 line([250,250+100*cc],[y_max-20,y_max-20],[2,2],'Color','k','LineWidth',5);
-txt = ('100 \mu m');
+txt = ('100 $\mu$m');
 text(250,y_max-70, 2,txt,'Color','k','FontSize',20)
 set(gca,'Ydir','reverse');
 
@@ -767,7 +772,7 @@ for j=1:length(Thetanew)
    end
     Theta_temp = zeros(length(Thetanew),1);                              % zero scaling coeffs for all bfs
     Theta_temp(j) = Thetanew(j);                                         % only choose one scaling coeff to non-zero
-    plot_surface(Theta_temp,Z,knotsnew,grid_limits,basis_type,0.75);
+        plot_surface(Theta_temp,Z,knots,grid_limits,basis_type,0.25);
 end
 end
 

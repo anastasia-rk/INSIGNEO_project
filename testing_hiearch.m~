@@ -124,7 +124,7 @@ for i=1:length(Theta)
             counter(i) = counter(i) + length(index);
         end
     end
-    %view(2)
+    view(2)
 xlim(x_lim);ylim(y_lim);
 set(gca,'Ydir','reverse')
 end
@@ -144,7 +144,7 @@ end
        end 
       
    
-   % view(2)
+    view(2)
 xlim(x_lim);ylim(y_lim);
 set(gca,'Ydir','reverse') 
 

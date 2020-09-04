@@ -106,10 +106,7 @@ for i = 1:length(yIdxs)-1
     end
 end
 figure, imagesc(patches{3,3})
-hold on
-for j = Tracks
-   plot(Y{j}(:,1),Y{j}(:,2),'-w','LineWidth',1); hold on; 
-end
+
 %% histogram plot for concentrations - didnt really work 
 figure;
 for j = Tracks

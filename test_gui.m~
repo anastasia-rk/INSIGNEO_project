@@ -1,3 +1,4 @@
+%local_init;
 %% Load data
 list = {'Normal','Mild','Hutt','Severe'};
 [selected,tf] = listdlg('ListString',list,'SelectionMode','single');
@@ -124,30 +125,35 @@ for i=1:length(Theta)
             counter(i) = counter(i) + length(index);
         end
     end
-    %view(2)
+    view(2)
 xlim(x_lim);ylim(y_lim);
 set(gca,'Ydir','reverse')
 end
 
 %% example patch
 [m,i] = max(counter)
- figure; %fig(num2str(i),visFlag);
+ fgifig(num2str(i),visFlag);
     imshow(A); hold on;
     a = knots(1,i*2-1);
     b = knots(2,i*2-1);
     p=rectangle('Position',[a,b,side1,side2],'Curvature',0.1,'EdgeColor','w'); 
     hold on;
        for j = Tracks
-           if ~isempty(Y_patch{i,j})
-            plot(Y_patch{i,j}(:,1),Y_patch{i,j}(:,2),'-g','LineWidth',1); hold on; 
-           end
-       end 
-      
+            plot(Y_patch{i,j}(:,1),Y_patch{i,j}(:,2),'Color',cols{i},'LineWidth',1); hold on; 
+        end
    
-   % view(2)
+    view(2)
 xlim(x_lim);ylim(y_lim);
 set(gca,'Ydir','reverse') 
-
+    
+% surf(Yy_grid,Xx_grid,-AA,'FaceColor',white,'EdgeColor',white);
+% view(2)
+% xlim(x_lim);ylim(y_lim);
+% hold on;
+% line([250,250+100*cc],[y_max-20,y_max-20],[2,2],'Color','k','LineWidth',5);
+% txt = ('100 $\mu$m');
+% text(250,y_max-70, 2,txt,'Color','k','FontSize',20)
+% % print([FigFolder,'modes_all_',Injury,num2str(iFish)],saveFormat)
 %% Field heatmap on a fish with a mask
 figure;%fig('Heatmap',visFlag);
 imshow(A); hold on;
@@ -163,52 +169,3 @@ txt = ('100 $\mu$m');
 text(250,y_max-70, 2,txt,'Color','k','FontSize',20)
 set(gca,'Ydir','reverse');
 % print([FigFolder,'heatmap_',Injury,num2str(iFish)],saveFormat)
-%%
-figure;
-grid_lim2 = [knots(1,i*2-1),knots(2,i*2-1),knots(1,i*2),knots(2,i*2)]
-mx = 2; my = 2; order2 = 4;
-[knots2] = setup_spline_support(grid_lim2,mx,my,order2)
-%knots(:,i*2-1:i*2) = []
-knotsnew = [knots(:,1:i*2-2),knots2(:,:),knots(:,i*2+1:end)]
-lll = size(knotsnew,2)/2; % size of parameter vector
-% Initialise field model parameters
-Thetanew = ones(lll,1);
-
-imshow(A); hold on;
-plot_heatmap(Thetanew,Z,knotsnew,grid_limits,basis_type);
-%hold on 
-%plot_heatmap(Thetanew,Z,knots2,grid_lim2,basis_type);
-% alpha(0.5)
-hold on;
-surf(Yy_grid,Xx_grid,-AA,'FaceColor',white,'EdgeColor',white);
-view(2)
-xlim(x_lim);ylim(y_lim);
-hold on;
-line([250,250+100*cc],[y_max-20,y_max-20],[2,2],'Color','k','LineWidth',5);
-txt = ('100 $\mu$m');
-text(250,y_max-70, 2,txt,'Color','k','FontSize',20)
-set(gca,'Ydir','reverse');
-title('Hiearchy')
-    
-figure;
-side11 = knotsnew(1,2) - knotsnew(1,1);
-side22 = knotsnew(2,2) - knotsnew(2,1);
-for j=1:length(Thetanew)
-   switch basis_type
-        case 'gaussian'
-            xx = knotsnew(1,j);
-            yy = knotsnew(2,j);
-        case 'bspline'
-            aa = knotsnew(1,j*2-1);
-            bb = knotsnew(2,j*2-1);
-           xx = aa + side11/2 - 30;
-           yy = bb + side22/2 - 30;
-            
-   end
-    Theta_temp = zeros(length(Thetanew),1);                              % zero scaling coeffs for all bfs
-    Theta_temp(j) = Thetanew(j);                                         % only choose one scaling coeff to non-zero
-    plot_surface(Theta_temp,Z,knotsnew,grid_limits,basis_type,0.25);
-end
-
-
-

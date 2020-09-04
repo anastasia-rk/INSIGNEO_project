@@ -3,6 +3,7 @@
 list = {'Normal','Mild','Hutt','Severe'};
 [selected,tf] = listdlg('ListString',list,'SelectionMode','single');
 Injury = list{selected};
+flagGray = false;
 switch Injury
     case 'Normal'
          folderName = 'Recruitment/normal_injury/';
@@ -14,6 +15,7 @@ switch Injury
          cc = 0.93; % scaling coefficient for the scale bar
          T  = 1.5;  % time increment
          nFish = 5; % number of fish to process
+         flagGray = true;
     case 'Hutt'
          folderName = 'Recruitment/huttenlocher_injury/';
          cc = 0.99; % scaling coefficient for the scale bar
@@ -31,10 +33,14 @@ iFish = 1;
 load([folderName,'tracks_' num2str(iFish)]);
 % Load brightfield image
 A = imread([folderName,'bf_' num2str(iFish),'.png']); % for huttenlocher injury 
-Cnt = rgb2gray(A); 
+if ~flagGray
+    Cnt = rgb2gray(A);
+else
+    Cnt = A;
+end
 [y_max,x_max,zz] = size(A);
 % Load the mask
-BW = fishmask(Cnt);%load([folderName,'mask_',num2str(iFish)]); % downloads variable BW
+load([folderName,'mask_',num2str(iFish)]); % downloads variable BW
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Room for Kate
@@ -75,7 +81,7 @@ basis_type = 'bspline';
 % Set up limits of the grid: x_min,y_min,x_max,y_max
 grid_limits = [0, 0, x_max, y_max];
 % Set up number of basis functions
-nx = 6; ny = 6; order = 4;
+nx = 4; ny = 4; order = 4;
 [knots] = setup_spline_support(grid_limits,nx,ny,order); % spline support nodes
 Z = 0;
 ll = size(knots,2)/2; % size of parameter vector
@@ -98,23 +104,58 @@ Yy = 1:1:size(A,1); % create the grid of y coords
 white=[1,1,1]; % surface colour
 gg = [0.8,0.8,0.8]; % extra colour for cells
 %% Cell tracks on a fish with a mask
-%fig('Tracks',visFlag)
+figure;%fig('Tracks',visFlag)
 imshow(A); hold on;
 % hold on;
-for j = Tracks
-   plot(Y{j}(:,1),Y{j}(:,2),'-w','LineWidth',1); hold on; 
-end
-surf(Yy_grid,Xx_grid,-AA,'FaceColor',white,'EdgeColor',white);
-view(2)
+side1 = knots(1,2) - knots(1,1);
+side2 = knots(2,2) - knots(2,1);
+% for j = Tracks
+%    plot(Y{j}(:,1),Y{j}(:,2),'-w','LineWidth',1); hold on; 
+% end
+
+for i=1:length(Theta)
+   
+    counter(i) = 0;
+    cols{i} = [rand, rand, rand];
+    for j = Tracks
+        index = find(Y{j}(:,1)>knots(1,i*2-1) & Y{j}(:,1)<knots(1,i*2) & Y{j}(:,2)>knots(2,i*2-1) & Y{j}(:,2)<knots(2,i*2) );
+        if ~isempty(index)
+            Y_patch{i,j} = Y{j}(index,:);
+            plot(Y_patch{i,j}(:,1),Y_patch{i,j}(:,2),'Color',cols{i},'LineWidth',1); hold on; 
+            counter(i) = counter(i) + length(index);
+        end
+    end
+    view(2)
 xlim(x_lim);ylim(y_lim);
-hold on;
-line([250,250+100*cc],[y_max-20,y_max-20],[2,2],'Color','k','LineWidth',5);
-txt = ('100 $\mu$m');
-text(250,y_max-70, 2,txt,'Color','k','FontSize',20)
 set(gca,'Ydir','reverse')
-% print([FigFolder,'modes_all_',Injury,num2str(iFish)],saveFormat)
+end
+
+%% example patch
+[m,i] = max(counter)
+ figure; %fig(num2str(i),visFlag);
+    imshow(A); hold on;
+    a = knots(1,i*2-1);
+    b = knots(2,i*2-1);
+    p=rectangle('Position',[a,b,side1,side2],'Curvature',0.1,'EdgeColor','w'); 
+    hold on;
+       for j = Tracks
+            plot(Y_patch{i,j}(:,1),Y_patch{i,j}(:,2),'Color',cols{i},'LineWidth',1); hold on; 
+        end
+   
+    view(2)
+xlim(x_lim);ylim(y_lim);
+set(gca,'Ydir','reverse') 
+    
+% surf(Yy_grid,Xx_grid,-AA,'FaceColor',white,'EdgeColor',white);
+% view(2)
+% xlim(x_lim);ylim(y_lim);
+% hold on;
+% line([250,250+100*cc],[y_max-20,y_max-20],[2,2],'Color','k','LineWidth',5);
+% txt = ('100 $\mu$m');
+% text(250,y_max-70, 2,txt,'Color','k','FontSize',20)
+% % print([FigFolder,'modes_all_',Injury,num2str(iFish)],saveFormat)
 %% Field heatmap on a fish with a mask
-%fig('Heatmap',visFlag);
+figure;%fig('Heatmap',visFlag);
 imshow(A); hold on;
 plot_heatmap(Theta,Z,knots,grid_limits,basis_type);
 % alpha(0.5)
