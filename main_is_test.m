@@ -158,12 +158,12 @@ parfor k=Tracks
           x_tilde = mvnrnd(X_out{k}(:,t)',P_out{k}{t},L);
 %          [x_tilde,denoms] = univmultivar(X_out{k}(:,t),P_out{k}{t},L);
          % compute values of proposal for each particle
-%          denoms = mvnpdf(x_tilde,X_out{k}(:,t)',P_out{k}{t});
+          denoms = mvnpdf(x_tilde,X_out{k}(:,t)',P_out{k}{t});
          % compute true pdf for each particle
-%           numers = pdf(mixture{k}{t},x_tilde);
+           numers = pdf(mixture{k}{t},x_tilde);
 %          numers = mvnpdf(x_tilde,X_out{k}(:,t)',P_out{k}{t});
          % compute particle weights
-         weights =  ones(size(numers));  % 
+         weights =  numers./denoms;  % 
 %          weights = weights/sum(weights);
          % transpose the vector to use in the dynamical function readily
          x_tilde = x_tilde'; 
@@ -174,7 +174,7 @@ parfor k=Tracks
              x_j_tilde = mvnrnd(X_cond{k}{j}(:,t+1)',P_cond{k}{j,t+1},L);
 %             [x_j_tilde,denoms_j] = univmultivar(X_cond{k}{j}(:,t+1),P_cond{k}{j,t+1},L)
             % compute values of proposal for each particle
-%             denoms_j = mvnpdf(x_j_tilde,X_cond{k}{j}(:,t+1)',P_cond{k}{j,t+1});
+             denoms_j = mvnpdf(x_j_tilde,X_cond{k}{j}(:,t+1)',P_cond{k}{j,t+1});
             % compute true pdf for each particle
 %             numers_j = pdf(mixture{k}{t+1},x_j_tilde);
 %             numers_j = mvnpdf(x_j_tilde,X_cond{k}{j}(:,t+1)',P_cond{k}{j,t+1});
@@ -185,10 +185,10 @@ parfor k=Tracks
             x_j_tilde = x_j_tilde'; 
             for i=1:L
                 bb = B{j}*mu_field* grads{i};
-                sum1 = sum1 + weights(i)*Mu_out{k}(j,t)*bb'*Sig_w{j}*bb;
-                sum3 = sum3 + weights(i)*Mu_out{k}(j,t)*bb'*Sig_w{j}*F{j}*x_tilde(:,i);
+                sum1 = sum1 + weights(i)*Mu_out{k}(j,t)*bb'*Sig_w{j}*bb*denoms(i);
+                sum3 = sum3 + weights(i)*Mu_out{k}(j,t)*bb'*Sig_w{j}*F{j}*x_tilde(:,i)*denoms(i);
                 for l=1:L
-                    sum2 = sum2 + weights(i)*weights_j(l)*Mu_out{k}(j,t)*bb'*Sig_w{j}*x_j_tilde(:,l);
+                    sum2 = sum2 + weights(i)*weights_j(l)*denoms_j(l)*denoms(i)*Mu_out{k}(j,t)*bb'*Sig_w{j}*x_j_tilde(:,l);
                 end % for particles at x_tilde_j (l)
             end  % for particles at x_tilse (i)
          end % for modes (j) 

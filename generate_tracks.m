@@ -81,6 +81,7 @@ fig('Heatmap',visFlag);
 colormap(my_map);
 Z = 0;
 plot_heatmap(Theta_model,Z,knots,grid_limits,basis_type);
+colorbar;
 hold on;
 side = knots(1,2) - knots(1,1);
 for i=1:length(Theta_model)
