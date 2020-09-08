@@ -81,7 +81,7 @@ basis_type = 'bspline';
 % Set up limits of the grid: x_min,y_min,x_max,y_max
 grid_limits = [0, 0, x_max, y_max];
 % Set up number of basis functions
-nx = 4; ny = 4; order = 4;
+nx = 8; ny = 8; order = 4;
 [knots] = setup_spline_support(grid_limits,nx,ny,order); % spline support nodes
 Z = 0;
 ll = size(knots,2)/2; % size of parameter vector
@@ -109,9 +109,21 @@ imshow(A); hold on;
 % hold on;
 side1 = knots(1,2) - knots(1,1);
 side2 = knots(2,2) - knots(2,1);
-% for j = Tracks
-%    plot(Y{j}(:,1),Y{j}(:,2),'-w','LineWidth',1); hold on; 
-% end
+for j = Tracks
+   plot(Y{j}(:,1),Y{j}(:,2),'-w','LineWidth',1); hold on; 
+end
+view(2)
+xlim(x_lim);ylim(y_lim);
+set(gca,'Ydir','reverse')
+surf(Yy_grid,Xx_grid,-AA,'FaceColor',white,'EdgeColor',white);
+view(2)
+xlim(x_lim);ylim(y_lim);
+hold on;
+line([250,250+100*cc],[y_max-20,y_max-20],[2,2],'Color','k','LineWidth',5);
+txt = ('100 $\mu$m');
+text(250,y_max-70, 2,txt,'Color','k','FontSize',20)
+% print([FigFolder,'modes_all_',Injury,num2str(iFish)],saveFormat)
+%% Counter
 for i=1:length(Theta)
     counter(i) = 0;
 %     cols{i} = [rand, rand, rand];
@@ -123,18 +135,7 @@ for i=1:length(Theta)
             counter(i) = counter(i) + length(index);
         end
     end
-%     view(2)
-% xlim(x_lim);ylim(y_lim);
-% set(gca,'Ydir','reverse')
 end
-% surf(Yy_grid,Xx_grid,-AA,'FaceColor',white,'EdgeColor',white);
-% view(2)
-% xlim(x_lim);ylim(y_lim);
-% hold on;
-% line([250,250+100*cc],[y_max-20,y_max-20],[2,2],'Color','k','LineWidth',5);
-% txt = ('100 $\mu$m');
-% text(250,y_max-70, 2,txt,'Color','k','FontSize',20)
-% % print([FigFolder,'modes_all_',Injury,num2str(iFish)],saveFormat)
 %% example patch
 [m,i] = max(counter);
  fig(num2str(i),visFlag);

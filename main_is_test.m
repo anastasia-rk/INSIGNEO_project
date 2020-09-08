@@ -155,13 +155,15 @@ tic
 parfor k=Tracks
      for t=1:T(k)-1
          % sample the particles from proposal pdf
-         x_tilde = mvnrnd(X_out{k}(:,t)',P_out{k}{t},L);
+          x_tilde = mvnrnd(X_out{k}(:,t)',P_out{k}{t},L);
+%          [x_tilde,denoms] = univmultivar(X_out{k}(:,t),P_out{k}{t},L);
          % compute values of proposal for each particle
-         denoms = mvnpdf(x_tilde,X_out{k}(:,t)',P_out{k}{t});
+%          denoms = mvnpdf(x_tilde,X_out{k}(:,t)',P_out{k}{t});
          % compute true pdf for each particle
-         numers = pdf(mixture{k}{t},x_tilde);
+%           numers = pdf(mixture{k}{t},x_tilde);
+%          numers = mvnpdf(x_tilde,X_out{k}(:,t)',P_out{k}{t});
          % compute particle weights
-         weights =  ones(size(numers));  % numers./denoms;
+         weights =  ones(size(numers));  % 
 %          weights = weights/sum(weights);
          % transpose the vector to use in the dynamical function readily
          x_tilde = x_tilde'; 
@@ -169,13 +171,15 @@ parfor k=Tracks
          % evaluate the gradient at each particle
          for j=1:n_models
             % sample the particles from proposal pdf
-            x_j_tilde = mvnrnd(X_cond{k}{j}(:,t+1)',P_cond{k}{j,t+1},L);
+             x_j_tilde = mvnrnd(X_cond{k}{j}(:,t+1)',P_cond{k}{j,t+1},L);
+%             [x_j_tilde,denoms_j] = univmultivar(X_cond{k}{j}(:,t+1),P_cond{k}{j,t+1},L)
             % compute values of proposal for each particle
-            denoms_j = mvnpdf(x_j_tilde,X_cond{k}{j}(:,t+1)',P_cond{k}{j,t+1});
+%             denoms_j = mvnpdf(x_j_tilde,X_cond{k}{j}(:,t+1)',P_cond{k}{j,t+1});
             % compute true pdf for each particle
-            numers_j = pdf(mixture{k}{t+1},x_j_tilde);
+%             numers_j = pdf(mixture{k}{t+1},x_j_tilde);
+%             numers_j = mvnpdf(x_j_tilde,X_cond{k}{j}(:,t+1)',P_cond{k}{j,t+1});
             % compute particle weights
-            weights_j = ones(size(numers_j)); %numers_j./denoms_j;
+            weights_j =  ones(size(numers_j)); % numers_j./1; % 
 %             weights_j = weights_j/sum(weights_j);
             % transpose the vector to use in the dynamical function readily
             x_j_tilde = x_j_tilde'; 
