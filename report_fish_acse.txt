@@ -1,0 +1,747 @@
+MATLAB is selecting SOFTWARE OPENGL rendering.
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2019 The MathWorks, Inc.
+              R2019b Update 2 (9.7.0.1247435) 64-bit (glnxa64)
+                              November 7, 2019
+
+ 
+To get started, type doc.
+For product information, visit www.mathworks.com.
+ 
+Setting model parameters... 
+Starting parallel pool (parpool) using the 'local' profile ...
+Connected to the parallel pool (number of workers: 12).
+E-step... 
+Elapsed time is 649.272952 seconds.
+M-step... 
+
+p_tr =
+
+    0.7953    0.0994    0.1053
+    0.0994    0.7953    0.1053
+    0.0570    0.0570    0.8860
+
+Elapsed time is 5.073541 seconds.
+Checking convergence condition... 
+E-step... 
+Elapsed time is 649.181426 seconds.
+M-step... 
+
+p_tr =
+
+    0.8307    0.0872    0.0821
+    0.1539    0.7110    0.1351
+    0.0545    0.0398    0.9057
+
+Elapsed time is 5.185791 seconds.
+Checking convergence condition... 
+E-step... 
+Elapsed time is 632.917576 seconds.
+M-step... 
+
+p_tr =
+
+    0.8308    0.0972    0.0719
+    0.2107    0.6144    0.1749
+    0.0559    0.0299    0.9142
+
+Elapsed time is 4.771418 seconds.
+Checking convergence condition... 
+E-step... 
+Elapsed time is 639.474636 seconds.
+M-step... 
+
+p_tr =
+
+    0.8100    0.1164    0.0736
+    0.2255    0.5752    0.1994
+    0.0556    0.0282    0.9162
+
+Elapsed time is 5.032169 seconds.
+Checking convergence condition... 
+E-step... 
+Elapsed time is 627.441381 seconds.
+M-step... 
+
+p_tr =
+
+    0.7847    0.1387    0.0767
+    0.2318    0.5588    0.2094
+    0.0548    0.0294    0.9158
+
+Elapsed time is 5.052015 seconds.
+Checking convergence condition... 
+E-step... 
+Elapsed time is 661.453578 seconds.
+M-step... 
+
+p_tr =
+
+    0.7624    0.1611    0.0766
+    0.2362    0.5497    0.2140
+    0.0536    0.0314    0.9149
+
+Elapsed time is 5.248662 seconds.
+Checking convergence condition... 
+E-step... 
+Elapsed time is 652.053601 seconds.
+M-step... 
+
+p_tr =
+
+    0.7436    0.1816    0.0748
+    0.2398    0.5454    0.2148
+    0.0517    0.0336    0.9147
+
+Elapsed time is 5.407400 seconds.
+Checking convergence condition... 
+E-step... 
+Elapsed time is 636.412060 seconds.
+M-step... 
+
+p_tr =
+
+    0.7271    0.2006    0.0723
+    0.2427    0.5449    0.2124
+    0.0491    0.0362    0.9146
+
+Elapsed time is 4.770224 seconds.
+Checking convergence condition... 
+E-step... 
+Elapsed time is 633.640158 seconds.
+M-step... 
+
+p_tr =
+
+    0.7132    0.2174    0.0694
+    0.2445    0.5468    0.2087
+    0.0464    0.0389    0.9148
+
+Elapsed time is 5.207017 seconds.
+Checking convergence condition... 
+E-step... 
+Elapsed time is 654.972855 seconds.
+M-step... 
+
+p_tr =
+
+    0.7013    0.2326    0.0661
+    0.2454    0.5493    0.2053
+    0.0438    0.0413    0.9149
+
+Elapsed time is 4.885859 seconds.
+Checking convergence condition... 
+E-step... 
+Elapsed time is 596.066767 seconds.
+M-step... 
+
+p_tr =
+
+    0.6904    0.2468    0.0628
+    0.2462    0.5513    0.2025
+    0.0415    0.0435    0.9150
+
+Elapsed time is 5.074960 seconds.
+Checking convergence condition... 
+E-step... 
+Elapsed time is 621.519038 seconds.
+M-step... 
+
+p_tr =
+
+    0.6797    0.2608    0.0595
+    0.2466    0.5536    0.1999
+    0.0393    0.0455    0.9152
+
+Elapsed time is 4.787263 seconds.
+Checking convergence condition... 
+E-step... 
+Elapsed time is 610.310077 seconds.
+M-step... 
+
+p_tr =
+
+    0.6692    0.2745    0.0562
+    0.2464    0.5562    0.1974
+    0.0372    0.0475    0.9153
+
+Elapsed time is 4.815054 seconds.
+Checking convergence condition... 
+E-step... 
+Elapsed time is 647.105789 seconds.
+M-step... 
+
+p_tr =
+
+    0.6593    0.2877    0.0530
+    0.2459    0.5590    0.1950
+    0.0352    0.0494    0.9155
+
+Elapsed time is 4.774428 seconds.
+Checking convergence condition... 
+E-step... 
+Elapsed time is 605.665538 seconds.
+M-step... 
+
+p_tr =
+
+    0.6497    0.3005    0.0498
+    0.2449    0.5622    0.1929
+    0.0332    0.0512    0.9156
+
+Elapsed time is 4.875148 seconds.
+Checking convergence condition... 
+E-step... 
+Elapsed time is 633.977527 seconds.
+M-step... 
+
+p_tr =
+
+    0.6404    0.3131    0.0466
+    0.2431    0.5660    0.1908
+    0.0314    0.0529    0.9157
+
+Elapsed time is 4.965231 seconds.
+Checking convergence condition... 
+E-step... 
+Elapsed time is 619.818988 seconds.
+M-step... 
+
+p_tr =
+
+    0.6310    0.3255    0.0434
+    0.2407    0.5706    0.1887
+    0.0296    0.0545    0.9159
+
+Elapsed time is 5.127488 seconds.
+Checking convergence condition... 
+E-step... 
+Elapsed time is 635.729229 seconds.
+M-step... 
+
+p_tr =
+
+    0.6216    0.3381    0.0402
+    0.2376    0.5759    0.1865
+    0.0279    0.0560    0.9161
+
+Elapsed time is 5.071082 seconds.
+Checking convergence condition... 
+E-step... 
+Elapsed time is 640.866407 seconds.
+M-step... 
+
+p_tr =
+
+    0.6120    0.3510    0.0370
+    0.2343    0.5815    0.1842
+    0.0262    0.0575    0.9163
+
+Elapsed time is 4.908362 seconds.
+Checking convergence condition... 
+E-step... 
+Elapsed time is 611.697753 seconds.
+M-step... 
+
+p_tr =
+
+    0.6023    0.3641    0.0337
+    0.2309    0.5871    0.1821
+    0.0246    0.0589    0.9165
+
+Elapsed time is 5.044251 seconds.
+Checking convergence condition... 
+
+VOL_ALL =
+
+   6.6130e+47
+
+
+TOTALV =
+
+   6.4749e+03
+
+[Warning: MATLAB has disabled some advanced graphics rendering features by
+switching to software OpenGL. For more information, click <a
+href="matlab:opengl('problems')">here</a>.] 
+IdleTimeout has been reached.
+Parallel pool using the 'local' profile is shutting down.
+MATLAB is selecting SOFTWARE OPENGL rendering.
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2019 The MathWorks, Inc.
+              R2019b Update 2 (9.7.0.1247435) 64-bit (glnxa64)
+                              November 7, 2019
+
+ 
+To get started, type doc.
+For product information, visit www.mathworks.com.
+ 
+Setting model parameters... 
+Starting parallel pool (parpool) using the 'local' profile ...
+Connected to the parallel pool (number of workers: 12).
+E-step... 
+Elapsed time is 925.775280 seconds.
+M-step... 
+
+p_tr =
+
+    0.7863    0.0983    0.1154
+    0.0983    0.7863    0.1154
+    0.0540    0.0540    0.8920
+
+Elapsed time is 7.005320 seconds.
+Checking convergence condition... 
+E-step... 
+Elapsed time is 916.097428 seconds.
+M-step... 
+
+p_tr =
+
+    0.8156    0.0837    0.1007
+    0.1381    0.7175    0.1444
+    0.0515    0.0406    0.9079
+
+Elapsed time is 7.174115 seconds.
+Checking convergence condition... 
+E-step... 
+Elapsed time is 917.796271 seconds.
+M-step... 
+
+p_tr =
+
+    0.8086    0.0957    0.0957
+    0.1992    0.6247    0.1760
+    0.0532    0.0343    0.9125
+
+Elapsed time is 7.152365 seconds.
+Checking convergence condition... 
+E-step... 
+Elapsed time is 945.373421 seconds.
+M-step... 
+
+p_tr =
+
+    0.7775    0.1248    0.0977
+    0.2223    0.5785    0.1992
+    0.0524    0.0337    0.9139
+
+Elapsed time is 7.153564 seconds.
+Checking convergence condition... 
+E-step... 
+Elapsed time is 936.998159 seconds.
+M-step... 
+
+p_tr =
+
+    0.7425    0.1606    0.0970
+    0.2270    0.5615    0.2115
+    0.0503    0.0357    0.9141
+
+Elapsed time is 6.980417 seconds.
+Checking convergence condition... 
+E-step... 
+Elapsed time is 940.980713 seconds.
+M-step... 
+
+p_tr =
+
+    0.7101    0.1965    0.0934
+    0.2278    0.5569    0.2153
+    0.0475    0.0389    0.9136
+
+Elapsed time is 7.142078 seconds.
+Checking convergence condition... 
+E-step... 
+Elapsed time is 932.479253 seconds.
+M-step... 
+
+p_tr =
+
+    0.6834    0.2291    0.0875
+    0.2254    0.5597    0.2149
+    0.0438    0.0429    0.9133
+
+Elapsed time is 7.219910 seconds.
+Checking convergence condition... 
+E-step... 
+Elapsed time is 939.030686 seconds.
+M-step... 
+
+p_tr =
+
+    0.6607    0.2587    0.0806
+    0.2224    0.5654    0.2122
+    0.0398    0.0470    0.9131
+
+Elapsed time is 7.015049 seconds.
+Checking convergence condition... 
+E-step... 
+Elapsed time is 924.437948 seconds.
+M-step... 
+
+p_tr =
+
+    0.6410    0.2856    0.0734
+    0.2186    0.5729    0.2085
+    0.0359    0.0510    0.9131
+
+Elapsed time is 7.019841 seconds.
+Checking convergence condition... 
+E-step... 
+Elapsed time is 901.477330 seconds.
+M-step... 
+
+p_tr =
+
+    0.6235    0.3103    0.0662
+    0.2139    0.5814    0.2047
+    0.0322    0.0547    0.9131
+
+Elapsed time is 6.905857 seconds.
+Checking convergence condition... 
+E-step... 
+Elapsed time is 908.489582 seconds.
+M-step... 
+
+p_tr =
+
+    0.6080    0.3329    0.0591
+    0.2086    0.5902    0.2012
+    0.0288    0.0581    0.9130
+
+Elapsed time is 7.028882 seconds.
+Checking convergence condition... 
+E-step... 
+Elapsed time is 899.989518 seconds.
+M-step... 
+
+p_tr =
+
+    0.5944    0.3532    0.0523
+    0.2029    0.5990    0.1981
+    0.0259    0.0611    0.9130
+
+Elapsed time is 6.930949 seconds.
+Checking convergence condition... 
+E-step... 
+Elapsed time is 908.505852 seconds.
+M-step... 
+
+p_tr =
+
+    0.5820    0.3718    0.0461
+    0.1972    0.6077    0.1951
+    0.0233    0.0636    0.9130
+
+Elapsed time is 6.882864 seconds.
+Checking convergence condition... 
+E-step... 
+Elapsed time is 903.907551 seconds.
+M-step... 
+
+p_tr =
+
+    0.5702    0.3892    0.0405
+    0.1913    0.6164    0.1922
+    0.0211    0.0660    0.9130
+
+Elapsed time is 7.085285 seconds.
+Checking convergence condition... 
+E-step... 
+Elapsed time is 900.585823 seconds.
+M-step... 
+
+p_tr =
+
+    0.5599    0.4045    0.0356
+    0.1856    0.6249    0.1895
+    0.0191    0.0681    0.9128
+
+Elapsed time is 6.968236 seconds.
+Checking convergence condition... 
+E-step... 
+Elapsed time is 905.858905 seconds.
+M-step... 
+
+p_tr =
+
+    0.5517    0.4170    0.0313
+    0.1802    0.6330    0.1868
+    0.0174    0.0698    0.9127
+
+Elapsed time is 7.033200 seconds.
+Checking convergence condition... 
+E-step... 
+Elapsed time is 908.894032 seconds.
+M-step... 
+
+p_tr =
+
+    0.5457    0.4266    0.0276
+    0.1750    0.6406    0.1845
+    0.0161    0.0713    0.9126
+
+Elapsed time is 6.956288 seconds.
+Checking convergence condition... 
+E-step... 
+Elapsed time is 907.622712 seconds.
+M-step... 
+
+p_tr =
+
+    0.5417    0.4338    0.0245
+    0.1702    0.6474    0.1824
+    0.0150    0.0725    0.9125
+
+Elapsed time is 6.978496 seconds.
+Checking convergence condition... 
+E-step... 
+Elapsed time is 911.952898 seconds.
+M-step... 
+
+p_tr =
+
+    0.5390    0.4391    0.0219
+    0.1660    0.6534    0.1806
+    0.0141    0.0734    0.9124
+
+Elapsed time is 6.920458 seconds.
+Checking convergence condition... 
+E-step... 
+Elapsed time is 918.906113 seconds.
+M-step... 
+
+p_tr =
+
+    0.5370    0.4433    0.0197
+    0.1624    0.6585    0.1792
+    0.0134    0.0742    0.9124
+
+Elapsed time is 6.916015 seconds.
+Checking convergence condition... 
+
+VOL_ALL =
+
+   2.7002e+47
+
+
+TOTALV =
+
+   5.5659e+03
+
+[Warning: MATLAB has disabled some advanced graphics rendering features by
+switching to software OpenGL. For more information, click <a
+href="matlab:opengl('problems')">here</a>.] 
+IdleTimeout has been reached.
+Parallel pool using the 'local' profile is shutting down.
+MATLAB is selecting SOFTWARE OPENGL rendering.
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2019 The MathWorks, Inc.
+              R2019b Update 2 (9.7.0.1247435) 64-bit (glnxa64)
+                              November 7, 2019
+
+ 
+To get started, type doc.
+For product information, visit www.mathworks.com.
+ 
+Setting model parameters... 
+Starting parallel pool (parpool) using the 'local' profile ...
+Connected to the parallel pool (number of workers: 12).
+E-step... 
+Elapsed time is 540.814862 seconds.
+M-step... 
+
+p_tr =
+
+    0.8015    0.1002    0.0984
+    0.1002    0.8015    0.0984
+    0.0596    0.0596    0.8809
+
+Elapsed time is 4.276534 seconds.
+Checking convergence condition... 
+E-step... 
+Elapsed time is 499.198408 seconds.
+M-step... 
+
+p_tr =
+
+    0.8448    0.0773    0.0779
+    0.1909    0.6760    0.1331
+    0.0606    0.0388    0.9006
+
+Elapsed time is 4.258851 seconds.
+Checking convergence condition... 
+E-step... 
+Elapsed time is 531.355689 seconds.
+M-step... 
+
+p_tr =
+
+    0.8262    0.0893    0.0845
+    0.2848    0.5429    0.1723
+    0.0685    0.0296    0.9019
+
+Elapsed time is 4.293849 seconds.
+Checking convergence condition... 
+E-step... 
+Elapsed time is 517.281978 seconds.
+M-step... 
+
+p_tr =
+
+    0.7959    0.1083    0.0958
+    0.3117    0.4935    0.1948
+    0.0736    0.0287    0.8977
+
+Elapsed time is 4.169830 seconds.
+Checking convergence condition... 
+E-step... 
+Elapsed time is 544.637145 seconds.
+M-step... 
+
+p_tr =
+
+    0.7731    0.1250    0.1019
+    0.3180    0.4746    0.2074
+    0.0746    0.0303    0.8951
+
+Elapsed time is 4.468733 seconds.
+Checking convergence condition... 
+E-step... 
+Elapsed time is 503.689445 seconds.
+M-step... 
+
+p_tr =
+
+    0.7571    0.1397    0.1032
+    0.3210    0.4655    0.2135
+    0.0731    0.0325    0.8944
+
+Elapsed time is 4.359768 seconds.
+Checking convergence condition... 
+E-step... 
+Elapsed time is 517.808423 seconds.
+M-step... 
+
+p_tr =
+
+    0.7453    0.1527    0.1020
+    0.3226    0.4615    0.2158
+    0.0710    0.0345    0.8945
+
+Elapsed time is 4.191088 seconds.
+Checking convergence condition... 
+E-step... 
+Elapsed time is 539.018043 seconds.
+M-step... 
+
+p_tr =
+
+    0.7359    0.1643    0.0998
+    0.3229    0.4608    0.2163
+    0.0687    0.0362    0.8951
+
+Elapsed time is 3.924422 seconds.
+Checking convergence condition... 
+E-step... 
+Elapsed time is 493.654290 seconds.
+M-step... 
+
+p_tr =
+
+    0.7279    0.1748    0.0973
+    0.3218    0.4626    0.2156
+    0.0664    0.0377    0.8958
+
+Elapsed time is 4.011358 seconds.
+Checking convergence condition... 
+E-step... 
+Elapsed time is 535.570303 seconds.
+M-step... 
+
+p_tr =
+
+    0.7210    0.1843    0.0947
+    0.3200    0.4658    0.2142
+    0.0642    0.0391    0.8967
+
+Elapsed time is 4.149316 seconds.
+Checking convergence condition... 
+E-step... 
+Elapsed time is 528.580593 seconds.
+M-step... 
+
+p_tr =
+
+    0.7148    0.1931    0.0921
+    0.3182    0.4691    0.2127
+    0.0620    0.0405    0.8975
+
+Elapsed time is 4.045773 seconds.
+Checking convergence condition... 
+E-step... 
+Elapsed time is 524.116009 seconds.
+M-step... 
+
+p_tr =
+
+    0.7093    0.2012    0.0895
+    0.3168    0.4716    0.2116
+    0.0600    0.0418    0.8982
+
+Elapsed time is 4.109180 seconds.
+Checking convergence condition... 
+E-step... 
+Elapsed time is 491.604340 seconds.
+M-step... 
+
+p_tr =
+
+    0.7045    0.2085    0.0870
+    0.3157    0.4735    0.2108
+    0.0580    0.0431    0.8988
+
+Elapsed time is 4.079251 seconds.
+Checking convergence condition... 
+E-step... 
+Elapsed time is 525.078529 seconds.
+M-step... 
+
+p_tr =
+
+    0.7004    0.2148    0.0847
+    0.3148    0.4750    0.2102
+    0.0563    0.0443    0.8994
+
+Elapsed time is 4.137807 seconds.
+Checking convergence condition... 
+E-step... 
+Elapsed time is 524.184403 seconds.
+M-step... 
+
+p_tr =
+
+    0.6971    0.2203    0.0826
+    0.3138    0.4764    0.2098
+    0.0547    0.0455    0.8999
+
+Elapsed time is 4.993811 seconds.
+Checking convergence condition... 
+
+VOL_ALL =
+
+   5.7543e+46
+
+
+TOTALV =
+
+   4.4228e+03
+
+[Warning: MATLAB has disabled some advanced graphics rendering features by
+switching to software OpenGL. For more information, click <a
+href="matlab:opengl('problems')">here</a>.] 
+IdleTimeout has been reached.
+Parallel pool using the 'local' profile is shutting down.

@@ -42,7 +42,7 @@ switch Injury
          nFish = 2; % number of fish to process
 end
 %%
-iFish = 1;
+iFish = 3;
 % Load tracking data
 load([folderName,'tracks_' num2str(iFish)]);
 % Load brightfield image
@@ -90,7 +90,7 @@ basis_type = 'bspline';
 % Set up limits of the grid: x_min,y_min,x_max,y_max
 grid_limits = [0, 0, x_max, y_max];
 % Set up number of basis functions
-nx = 6; ny = 6; order = 4;
+nx = 5; ny = 4; order = 4;
 [knots] = setup_spline_support(grid_limits,nx,ny,order); % spline support nodes
 Z = 0;
 ll = size(knots,2)/2; % size of parameter vector
@@ -641,6 +641,7 @@ plot_heatmap(Theta,Z,knots,grid_limits,basis_type);
 hold on;
 surf(Yy_grid,Xx_grid,-AA,'FaceColor',white,'EdgeColor',white);
 view(2)
+colorbar;
 hold on;
 xlim(x_lim);ylim(y_lim);
 line([250,250+100*cc],[y_max-20,y_max-20],[2,2],'Color','k','LineWidth',5);

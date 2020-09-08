@@ -1,2 +1,2 @@
-function[f] = fig(figName,visFlag)
-f = figure('Name',figName,'NumberTitle','off','visible',visFlag);
+function fig(figName,visFlag)
+figure('Name',figName,'NumberTitle','off','visible',visFlag);
