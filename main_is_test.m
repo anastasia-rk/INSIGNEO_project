@@ -117,7 +117,7 @@ fprintf('E-step... \n')
 iter = iter + 1;  
 %% Parfor loop for IMM
 tic
-parfor k=Tracks     
+for k=Tracks     
 %% recurtion cycle for IMM filter
     [x_m,P,mu,mode_probable_f{k}] = IMM_forward(T(k),x_len,n_models,p_tr,mu_0,Y{k},Q,R,F,B,C,Theta,knots,order);
 %% Recurtion cycle for IMM RTS smoother
@@ -155,34 +155,40 @@ tic
 parfor k=Tracks
      for t=1:T(k)-1
          % sample the particles from proposal pdf
-         x_tilde = mvnrnd(X_out{k}(:,t)',P_out{k}{t},L);
+          x_tilde = mvnrnd(X_out{k}(:,t)',P_out{k}{t},L);
+%          [x_tilde,denoms] = univmultivar(X_out{k}(:,t),P_out{k}{t},L);
          % compute values of proposal for each particle
-         denoms = mvnpdf(x_tilde,X_out{k}(:,t)',P_out{k}{t});
+          denoms = mvnpdf(x_tilde,X_out{k}(:,t)',P_out{k}{t});
          % compute true pdf for each particle
-         numers = pdf(mixture{k}{t},x_tilde);
+           numers = pdf(mixture{k}{t},x_tilde);
+%          numers = mvnpdf(x_tilde,X_out{k}(:,t)',P_out{k}{t});
          % compute particle weights
-         weights = numers./denoms;
+         weights =  numers./denoms;  % 
+%          weights = weights/sum(weights);
          % transpose the vector to use in the dynamical function readily
          x_tilde = x_tilde'; 
          grads = gradient_compute(x_tilde,knots,order);
          % evaluate the gradient at each particle
          for j=1:n_models
             % sample the particles from proposal pdf
-            x_j_tilde = mvnrnd(X_cond{k}{j}(:,t+1)',P_cond{k}{j,t+1},L);
+             x_j_tilde = mvnrnd(X_cond{k}{j}(:,t+1)',P_cond{k}{j,t+1},L);
+%             [x_j_tilde,denoms_j] = univmultivar(X_cond{k}{j}(:,t+1),P_cond{k}{j,t+1},L)
             % compute values of proposal for each particle
-            denoms_j = mvnpdf(x_j_tilde,X_cond{k}{j}(:,t+1)',P_cond{k}{j,t+1});
+             denoms_j = mvnpdf(x_j_tilde,X_cond{k}{j}(:,t+1)',P_cond{k}{j,t+1});
             % compute true pdf for each particle
-            numers_j = pdf(mixture{k}{t+1},x_j_tilde);
+%             numers_j = pdf(mixture{k}{t+1},x_j_tilde);
+%             numers_j = mvnpdf(x_j_tilde,X_cond{k}{j}(:,t+1)',P_cond{k}{j,t+1});
             % compute particle weights
-            weights_j = numers_j./denoms_j;
+            weights_j =  ones(size(numers_j)); % numers_j./1; % 
+%             weights_j = weights_j/sum(weights_j);
             % transpose the vector to use in the dynamical function readily
             x_j_tilde = x_j_tilde'; 
             for i=1:L
                 bb = B{j}*mu_field* grads{i};
-                sum1 = sum1 + weights(i)*Mu_out{k}(j,t)*bb'*Sig_w{j}*bb;
-                sum3 = sum3 + weights(i)*Mu_out{k}(j,t)*bb'*Sig_w{j}*F{j}*x_tilde(:,i);
+                sum1 = sum1 + weights(i)*Mu_out{k}(j,t)*bb'*Sig_w{j}*bb*denoms(i);
+                sum3 = sum3 + weights(i)*Mu_out{k}(j,t)*bb'*Sig_w{j}*F{j}*x_tilde(:,i)*denoms(i);
                 for l=1:L
-                    sum2 = sum2 + weights(i)*weights_j(l)*Mu_out{k}(j,t)*bb'*Sig_w{j}*x_j_tilde(:,l);
+                    sum2 = sum2 + weights(i)*weights_j(l)*denoms_j(l)*denoms(i)*Mu_out{k}(j,t)*bb'*Sig_w{j}*x_j_tilde(:,l);
                 end % for particles at x_tilde_j (l)
             end  % for particles at x_tilse (i)
          end % for modes (j) 
@@ -220,8 +226,9 @@ Fisher_info{iModel} = Expected_info;
 Miss_fisher{iModel} = Missing_info;
 end % for MC simulation (iModel)
 delete(pool);
+%%
 fiName = ['Results/is_',pattern];
-save(finName);
+save(fiName);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Example track - filtered, smoothed, conditioned
 fig('Track',visFlag); 

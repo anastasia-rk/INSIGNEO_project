@@ -90,7 +90,7 @@ mu_0 = mu_0./n_models;
 Sig_w{1} = G{1}*(inv(G{1}'*G{1}))'*Q_cv_inv*inv(G{1}'*G{1})*G{1}';
 Sig_w{2} = G{2}*(inv(G{2}'*G{2}))'*Q_rw_inv*inv(G{2}'*G{2})*G{2}';
 %% Monte Carlo loop
-models = [1:50];                                                               % Monte-Carlo simulations
+models = [1:25];                                                               % Monte-Carlo simulations
 pool = gcp('nocreate');
 if isempty(pool)
     pool = parpool('local');
@@ -151,7 +151,7 @@ p_tr = transitions{iter}
 %% Field parameters
 sum1 = 0; sum2 =  0; sum3 = 0;
 tic
-parfor k=Tracks
+for k=Tracks
      for t=1:T(k)-1
          x_tilde = X_out{k}(:,t);
          grad = gradient_bspline(x_tilde(1:2),knots,order);
