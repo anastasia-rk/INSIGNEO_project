@@ -42,7 +42,7 @@ switch Injury
          nFish = 2; % number of fish to process
 end
 %%
-iFish = 3;
+iFish = 1;
 % Load tracking data
 load([folderName,'tracks_' num2str(iFish)]);
 % Load brightfield image
@@ -67,7 +67,7 @@ if hour~=0
 end
 %% Create a frame around the image to extend basis function support;
 padH = 0; % vertical padding
-padW = 200; % horizontal padding
+padW = 150; % horizontal padding
 A = padarray(A,[padH, padW]); % creating a padded image
 for i=1:nTracks
     X{i}(:,1) = X{i}(:,1) + padW;
@@ -90,7 +90,7 @@ basis_type = 'bspline';
 % Set up limits of the grid: x_min,y_min,x_max,y_max
 grid_limits = [0, 0, x_max, y_max];
 % Set up number of basis functions
-nx = 5; ny = 4; order = 4;
+nx = 6; ny = 4; order = 4;
 [knots] = setup_spline_support(grid_limits,nx,ny,order); % spline support nodes
 Z = 0;
 ll = size(knots,2)/2; % size of parameter vector

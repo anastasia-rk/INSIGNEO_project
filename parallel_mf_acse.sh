@@ -2,7 +2,8 @@
 
 #$ -P acsehpc
 #$ -q acsehpc.q
-#$ -pe smp 16
+#$ -l h_rt=96:00:00
+#$ -pe smp 12
 #$ -l rmem=4G
 #$ -cwd 
 #$ -m bea                            

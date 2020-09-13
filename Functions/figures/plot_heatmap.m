@@ -8,14 +8,14 @@ function plot_heatmap(Theta,Z,knots,grid_limits,basis_type)
 % grid_limints(4x1) - the region of interes [x1 y1 x2 y2]
 % basis_type        - gaussian or bspline
 % Distance incriments
-dx = (grid_limits(3) - grid_limits(1))/100;
-dy = (grid_limits(4) - grid_limits(2))/100;
+dx = (grid_limits(3) - grid_limits(1))/100;%xval
+dy = (grid_limits(4) - grid_limits(2))/100;%yval
 coordinate_x = [grid_limits(1):dx:grid_limits(3)];
 coordinate_y = [grid_limits(2):dy:grid_limits(4)];
 N = length(coordinate_x);
 M = length(coordinate_y);
 [X_grid, Y_grid] = meshgrid(coordinate_x,coordinate_y);
-% Suface of spline superposition
+% Suface of basis function superposition
 switch basis_type
     case 'gaussian'
         ll = size(knots,2);
@@ -27,11 +27,11 @@ switch basis_type
                    pow = (S - c)'*inv(Z)*((S - c));
                    z(j,i,index1) = Theta(index1)*exp(-pow/2);   
                 end
-                Z_plot(j,i) = sum(z(j,i,:));
+                Z_plot(j,i) = sum(z(j,i,:)) + 1;
             end
         end
     case 'bspline'
-         ll = size(knots,2) - 1;
+         ll = size(knots,2) - 1; %31
          indexTheta = 1; % index of theta corresponding to each spline
          for index = 1:2:ll %odd numbers
                    support_x = knots(1,index:index+1); %  the x start and ends 
@@ -41,15 +41,17 @@ switch basis_type
                    Spline(:,:,indexTheta) = Z_plot;
                    indexTheta = indexTheta + 1;                 
          end
-         Z_sum = sum(Spline,3);
+       Z_sum = sum(Spline,3);
+        
 end
 Z_min = min(Z_sum);
 Z_min_min = min(Z_min);
-a_min = min(min(Z_sum-Z_min));
-a_max = max(max(Z_sum-Z_min));
-p = pcolor(X_grid,Y_grid,Z_sum-Z_min);
+% a_min = min(min(Z_sum-Z_min));
+% a_max = max(max(Z_sum-Z_min));
+p = pcolor(X_grid,Y_grid,Z_sum-Z_min_min);
 view(2);
 shading interp
-caxis manual
+% caxis manual
+colorbar;
 alpha(p,0.8);
-caxis([a_min a_max]);
+% caxis([a_min a_max]);
