@@ -1,6 +1,6 @@
 local_init;
 %% Select the pattern
-nTracks = 100;                                                              % number of tracks to generate in each map
+nTracks = 200;                                                              % number of tracks to generate in each map
 pattern = questdlg('Starting positions distribution', ...
     'Starting Positions',...
 	'Uniform','Line','Point','');

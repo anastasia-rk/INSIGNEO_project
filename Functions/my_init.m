@@ -5,7 +5,7 @@ set(groot, 'defaultTextinterpreter','latex');
 set(groot, 'defaultAxesTickLabelInterpreter','latex');  
 set(groot, 'defaultLegendInterpreter','latex');
 set(groot, 'defaultColorbarTickLabelInterpreter','latex');
-set(groot, 'defaultAxesFontWeight', 'normal','DefaultAxesFontSize', 16);
+set(groot, 'defaultAxesFontWeight', 'normal','DefaultAxesFontSize', 24);
 set(groot, 'defaultFigureposition',[680   558   560   420]);
 %% Custom colormap
 my_map = jet; % cutsom_colormap(256);
